@@ -15,24 +15,37 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var activationViewModel = new ActivationViewModel();
-
-            // Passo 1 da Fase 6 (Secção 11 do roteiro). O Passo 2
-            // (IssueLicenseView) ainda não existe — por agora, confirmar
-            // um pedido só regista no output de debug, para validar o
-            // fluxo de ponta a ponta desta primeira tela.
-            activationViewModel.RequestConfirmed += (_, request) =>
-                System.Diagnostics.Debug.WriteLine(
-                    $"[ActivationView] Pedido confirmado: produto={request.ProductId}, machineId={request.MachineId}. " +
-                    "Passo 2 (IssueLicenseView) ainda por implementar.");
-
+            // ⚠️ TEMPORÁRIO — Fase 6, checkpoint do M1 (fundação visual).
+            // Mostra só a DesignSystemPreview para confirmar visualmente que
+            // os DesignTokens/Styles novos renderizam certo, antes de avançar
+            // para o M2 (Login/Register, que aí sim vira a entrada real da
+            // app). O código do M0 (ActivationView) fica comentado abaixo,
+            // intacto, para religar quando a navegação for reconstruída no M3.
             desktop.MainWindow = new Window
             {
-                Title = "WeberTech.LicenseGenerator",
-                Width = 760,
-                Height = 640,
-                Content = new ActivationView { DataContext = activationViewModel }
+                Title = "WeberTech.LicenseGenerator — M1 (verificação visual)",
+                Width = 900,
+                Height = 700,
+                Content = new DesignSystemPreview()
             };
+
+            // var activationViewModel = new ActivationViewModel();
+            // activationViewModel.RequestConfirmed += (_, request) =>
+            // {
+            //     var issueViewModel = new IssueLicenseViewModel(
+            //         request,
+            //         new LicenseIssuer(new SignatureService()),
+            //         new KeyProvider(),
+            //         new FileDialogService(() => desktop.MainWindow));
+            //     desktop.MainWindow!.Content = new IssueLicenseView { DataContext = issueViewModel };
+            // };
+            // desktop.MainWindow = new Window
+            // {
+            //     Title = "WeberTech.LicenseGenerator",
+            //     Width = 760,
+            //     Height = 640,
+            //     Content = new ActivationView { DataContext = activationViewModel }
+            // };
         }
 
         base.OnFrameworkInitializationCompleted();

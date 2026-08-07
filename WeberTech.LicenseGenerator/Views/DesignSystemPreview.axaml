@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="700" d:DesignHeight="500"
+             x:Class="WeberTech.LicenseGenerator.Views.DesignSystemPreview">
+
+  <!--
+    Tela de verificação visual do M1 (Fase 6) — NÃO é uma tela final do
+    produto. Existe só para confirmar visualmente que os DesignTokens +
+    Styles renderizam com as cores/tipografia corretas antes de avançar
+    para o M2 (Login/Register). Ver README.md.
+  -->
+  <Grid Margin="32" RowDefinitions="Auto,Auto,*">
+
+    <TextBlock Grid.Row="0" Classes="label-md" Text="M1 — VERIFICAÇÃO VISUAL" Margin="0,0,0,4" />
+    <TextBlock Grid.Row="1" Classes="headline-lg" Text="WeberTech Licensing" Margin="0,0,0,24" />
+
+    <Border Grid.Row="2" Classes="card" MaxWidth="440" HorizontalAlignment="Left" VerticalAlignment="Top">
+      <StackPanel Spacing="16">
+
+        <TextBlock Classes="headline-md" Text="Licença Enterprise" />
+        <TextBlock Classes="body-sm" Text="Cliente: TechCorp Solutions Lda" />
+
+        <Border Classes="mono-well">
+          <TextBlock Classes="mono-md" Text="WT-ENT-X92M-L4C7" />
+        </Border>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Border Classes="badge badge-success">
+            <TextBlock Classes="label-md" Text="ATIVA" Foreground="#4ADE80" />
+          </Border>
+          <Border Classes="badge badge-error">
+            <TextBlock Classes="label-md" Text="EXPIRA EM BREVE" />
+          </Border>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+          <Button Classes="accent" Content="Gerar Licença (.wta)" />
+          <Button Classes="secondary" Content="Cancelar" />
+          <Button Classes="tertiary" Content="Ver detalhes" />
+        </StackPanel>
+
+      </StackPanel>
+    </Border>
+
+  </Grid>
+</UserControl>

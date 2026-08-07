@@ -1,0 +1,102 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!--
+    Tokens extraídos de cyber_shield_enterprise/DESIGN.md (fornecido pelo
+    utilizador — Fase 6, M1). Nomes de chave espelham os nomes do design
+    system para facilitar consulta cruzada. Só ResourceDictionary aqui —
+    os estilos que os USAM ficam em Styles.axaml.
+  -->
+
+  <!-- ============ Cores — superfícies (fundo, tiered dark) ============ -->
+  <Color x:Key="ColorSurface">#0C1324</Color>
+  <Color x:Key="ColorSurfaceDim">#0C1324</Color>
+  <Color x:Key="ColorSurfaceBright">#33394C</Color>
+  <Color x:Key="ColorSurfaceContainerLowest">#070D1F</Color>
+  <Color x:Key="ColorSurfaceContainerLow">#151B2D</Color>
+  <Color x:Key="ColorSurfaceContainer">#191F31</Color>
+  <Color x:Key="ColorSurfaceContainerHigh">#23293C</Color>
+  <Color x:Key="ColorSurfaceContainerHighest">#2E3447</Color>
+  <Color x:Key="ColorOnSurface">#DCE1FB</Color>
+  <Color x:Key="ColorOnSurfaceVariant">#C1C6D7</Color>
+  <Color x:Key="ColorOutline">#8B91A0</Color>
+  <Color x:Key="ColorOutlineVariant">#414754</Color>
+
+  <!-- ============ Cores — primária (azul elétrico) ============ -->
+  <Color x:Key="ColorPrimary">#ABC7FF</Color>
+  <Color x:Key="ColorOnPrimary">#002F66</Color>
+  <Color x:Key="ColorPrimaryContainer">#448FFF</Color>
+  <Color x:Key="ColorOnPrimaryContainer">#002859</Color>
+
+  <!-- ============ Cores — secundária (silver/slate) ============ -->
+  <Color x:Key="ColorSecondary">#B9C8DE</Color>
+  <Color x:Key="ColorOnSecondary">#233143</Color>
+  <Color x:Key="ColorSecondaryContainer">#39485A</Color>
+  <Color x:Key="ColorOnSecondaryContainer">#A7B6CC</Color>
+
+  <!-- ============ Cores — funcionais (erro/validação) ============ -->
+  <Color x:Key="ColorError">#FFB4AB</Color>
+  <Color x:Key="ColorOnError">#690005</Color>
+  <Color x:Key="ColorErrorContainer">#93000A</Color>
+  <Color x:Key="ColorOnErrorContainer">#FFDAD6</Color>
+
+  <!-- ============ Brushes (o que se usa de facto nos estilos) ============ -->
+  <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource ColorSurface}" />
+  <SolidColorBrush x:Key="SurfaceContainerLowestBrush" Color="{StaticResource ColorSurfaceContainerLowest}" />
+  <SolidColorBrush x:Key="SurfaceContainerLowBrush" Color="{StaticResource ColorSurfaceContainerLow}" />
+  <SolidColorBrush x:Key="SurfaceContainerBrush" Color="{StaticResource ColorSurfaceContainer}" />
+  <SolidColorBrush x:Key="SurfaceContainerHighBrush" Color="{StaticResource ColorSurfaceContainerHigh}" />
+  <SolidColorBrush x:Key="SurfaceContainerHighestBrush" Color="{StaticResource ColorSurfaceContainerHighest}" />
+  <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource ColorOnSurface}" />
+  <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="{StaticResource ColorOnSurfaceVariant}" />
+  <SolidColorBrush x:Key="OutlineBrush" Color="{StaticResource ColorOutline}" />
+  <SolidColorBrush x:Key="OutlineVariantBrush" Color="{StaticResource ColorOutlineVariant}" />
+
+  <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource ColorPrimary}" />
+  <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource ColorOnPrimary}" />
+  <SolidColorBrush x:Key="PrimaryContainerBrush" Color="{StaticResource ColorPrimaryContainer}" />
+
+  <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource ColorSecondary}" />
+  <SolidColorBrush x:Key="SecondaryContainerBrush" Color="{StaticResource ColorSecondaryContainer}" />
+
+  <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ColorError}" />
+  <SolidColorBrush x:Key="OnErrorBrush" Color="{StaticResource ColorOnError}" />
+  <SolidColorBrush x:Key="ErrorContainerBrush" Color="{StaticResource ColorErrorContainer}" />
+  <SolidColorBrush x:Key="OnErrorContainerBrush" Color="{StaticResource ColorOnErrorContainer}" />
+
+  <!-- "Glow" de foco/ativo — azul primário a 30% de opacidade (Secção Elevação do DESIGN.md) -->
+  <SolidColorBrush x:Key="GlowBrush" Color="{StaticResource ColorPrimaryContainer}" Opacity="0.3" />
+
+  <!-- ============ Tipografia ============ -->
+  <!--
+    Inter é a fonte default de toda a app via WithInterFont() (Program.cs) —
+    não precisa de FontFamily explícita nos estilos de texto normal.
+    JetBrains Mono é embutida (Assets/Fonts/JetBrainsMono/*.ttf) para
+    licenças/chaves/dados técnicos, conforme o DESIGN.md.
+  -->
+  <FontFamily x:Key="MonoFontFamily">avares://WeberTech.LicenseGenerator/Assets/Fonts/JetBrainsMono#JetBrains Mono</FontFamily>
+
+  <x:Double x:Key="FontSizeDisplayLg">48</x:Double>
+  <x:Double x:Key="FontSizeHeadlineLg">32</x:Double>
+  <x:Double x:Key="FontSizeHeadlineMd">24</x:Double>
+  <x:Double x:Key="FontSizeBodyLg">18</x:Double>
+  <x:Double x:Key="FontSizeBodyMd">16</x:Double>
+  <x:Double x:Key="FontSizeBodySm">14</x:Double>
+  <x:Double x:Key="FontSizeLabelMd">12</x:Double>
+  <x:Double x:Key="FontSizeMonoMd">14</x:Double>
+
+  <!-- ============ Forma (radius) ============ -->
+  <CornerRadius x:Key="RadiusSm">2</CornerRadius>
+  <CornerRadius x:Key="RadiusDefault">4</CornerRadius>
+  <CornerRadius x:Key="RadiusMd">6</CornerRadius>
+  <CornerRadius x:Key="RadiusLg">8</CornerRadius>
+  <CornerRadius x:Key="RadiusFull">9999</CornerRadius>
+
+  <!-- ============ Spacing (unidade base 4px) ============ -->
+  <Thickness x:Key="SpacingXs">4</Thickness>
+  <Thickness x:Key="SpacingSm">8</Thickness>
+  <Thickness x:Key="SpacingMd">16</Thickness>
+  <Thickness x:Key="SpacingGutter">24</Thickness>
+  <Thickness x:Key="SpacingMargin">32</Thickness>
+
+</ResourceDictionary>

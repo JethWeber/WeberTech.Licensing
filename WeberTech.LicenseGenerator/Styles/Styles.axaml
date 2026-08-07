@@ -1,0 +1,150 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!--
+    Estilos globais + classes reutilizáveis do design system Cyber-Shield
+    Enterprise (Fase 6, M1). Aplicados por cima do FluentTheme — ver ordem
+    de inclusão em App.axaml (FluentTheme primeiro, este ficheiro depois,
+    para conseguir sobrepor os defaults onde os seletores baterem).
+  -->
+
+  <!-- ============ Base — fundo/texto default de toda a app ============ -->
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+  </Style>
+
+  <Style Selector="UserControl">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBodyMd}" />
+  </Style>
+
+  <!-- ============ Tipografia — classes espelhando o DESIGN.md ============ -->
+  <Style Selector="TextBlock.display-lg">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeDisplayLg}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="LetterSpacing" Value="-4" />
+  </Style>
+
+  <Style Selector="TextBlock.headline-lg">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeHeadlineLg}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LetterSpacing" Value="-2" />
+  </Style>
+
+  <Style Selector="TextBlock.headline-md">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeHeadlineMd}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="TextBlock.body-lg">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBodyLg}" />
+  </Style>
+
+  <Style Selector="TextBlock.body-sm">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBodySm}" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceVariantBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.label-md">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeLabelMd}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LetterSpacing" Value="0.6" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceVariantBrush}" />
+  </Style>
+
+  <!-- Licenças/chaves/dados técnicos — sempre JetBrains Mono, num contentor "recesso" -->
+  <Style Selector="TextBlock.mono-md">
+    <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSizeMonoMd}" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}" />
+  </Style>
+
+  <!-- ============ Cards / painéis (superfície elevada, borda sutil) ============ -->
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{StaticResource SurfaceContainerBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource OutlineVariantBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusLg}" />
+    <Setter Property="Padding" Value="16" />
+  </Style>
+
+  <!-- Contentor "recesso" para valores técnicos (chaves, Machine ID) -->
+  <Style Selector="Border.mono-well">
+    <Setter Property="Background" Value="{StaticResource SurfaceContainerLowestBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource OutlineVariantBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusDefault}" />
+    <Setter Property="Padding" Value="8,6" />
+  </Style>
+
+  <!-- ============ Botões ============ -->
+  <!-- Primário — accent: fundo azul sólido, texto escuro, glow no hover -->
+  <Style Selector="Button.accent">
+    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusDefault}" />
+    <Setter Property="Padding" Value="16,10" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource PrimaryContainerBrush}" />
+    <Setter Property="BoxShadow" Value="0 0 8 0 #4D448FFF" />
+  </Style>
+
+  <!-- Secundário — borda silver, fundo transparente -->
+  <Style Selector="Button.secondary">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusDefault}" />
+    <Setter Property="Padding" Value="16,10" />
+  </Style>
+  <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SurfaceContainerHighBrush}" />
+  </Style>
+
+  <!-- Terciário — só texto, para ações de baixa prioridade -->
+  <Style Selector="Button.tertiary">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="8,4" />
+  </Style>
+
+  <!-- ============ Campos de entrada ============ -->
+  <Style Selector="TextBox">
+    <Setter Property="Background" Value="{StaticResource SurfaceContainerLowBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource OutlineVariantBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusDefault}" />
+    <Setter Property="Padding" Value="10,8" />
+    <Setter Property="CaretBrush" Value="{StaticResource PrimaryBrush}" />
+  </Style>
+  <Style Selector="TextBox:focus">
+    <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+  </Style>
+
+  <!-- ============ Badges/chips de status (ex.: Ativo/Expirado) ============ -->
+  <Style Selector="Border.badge">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusFull}" />
+    <Setter Property="Padding" Value="10,3" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="Border.badge-success">
+    <Setter Property="Background" Value="#1A2E7D32" />
+    <Setter Property="BorderBrush" Value="#4C2E7D32" />
+  </Style>
+  <Style Selector="Border.badge-error">
+    <Setter Property="Background" Value="{StaticResource ErrorContainerBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource ErrorBrush}" />
+    <Setter Property="Opacity" Value="0.9" />
+  </Style>
+
+</Styles>
