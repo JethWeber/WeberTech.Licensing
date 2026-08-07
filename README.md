@@ -163,14 +163,44 @@ testes usam sempre `FakeWmiQueryService`, por isso correm em qualquer SO.
       `LicenseStoreTests` (save/load, criação de subpastas, ficheiro
       corrompido, carimbo de verificação, caminho padrão).
 
-## Próximo passo: Fase 6 — `WeberTech.LicenseGenerator` (Avalonia)
+## Estado atual: Fases 1–5 concluídas · Fase 6 em curso (Passo 1 concluído)
 
-1. `ActivationView` — colar/ler o Base64 do QR (`ActivationRequestService.ParseQrText`).
-2. `IssueLicenseView` — formulário (produto → `ProductProfile` filtra módulos/planos,
-   cliente, Machine ID auto, plano, tipo, datas, checkboxes de módulos) →
-   `LicenseIssuer.Issue(...)` com a chave privada (`KeyProvider.LoadPrivateKey`).
-3. `HistoryView` — histórico local em SQLite (`EmissionHistoryDbContext`).
-4. Introduzir `Enums/ProductType.cs` e `Models/ProductProfile.cs` (ainda não
-   criados — só entram nesta fase, junto com o formulário que os consome).
+**Fase 6 — `WeberTech.LicenseGenerator` (Avalonia) — Passo 1: `ActivationView`**
+- [x] Pacote `CommunityToolkit.Mvvm` adicionado ao `LicenseGenerator.csproj`
+      (`[ObservableProperty]`/`[RelayCommand]` via source generators).
+- [x] `ViewModels/ActivationViewModel.cs` — `QrText` (texto colado),
+      `ParseQrTextCommand` (chama `ActivationRequestService.ParseQrText`,
+      já feito na Fase 4), `ParsedRequest` (resultado), `ErrorMessage`
+      (mensagem amigável em `ActivationRequestFormatException`),
+      `ContinueCommand` (só habilitado com um pedido interpretado — via
+      `[NotifyCanExecuteChangedFor]`), `ClearCommand`. Expõe o evento
+      `RequestConfirmed`, que o Passo 2 (`IssueLicenseView`) vai consumir
+      para navegar com o `ActivationRequest` já validado.
+- [x] `Views/ActivationView.axaml` (+ code-behind) — `TextBox` para colar o
+      Base64 do QR, botões "Interpretar pedido"/"Limpar", mensagem de erro,
+      e um painel com `ProductId`/`MachineId`/`RequestId`/`RequestedAt` do
+      pedido interpretado. Bindings compilados (`x:DataType`), consistente
+      com `AvaloniaUseCompiledBindingsByDefault=true` já configurado.
+- [x] `App.axaml.cs` — `MainWindow` agora mostra a `ActivationView` (troquei
+      a janela em branco da Fase 1). `RequestConfirmed` por agora só
+      escreve no output de debug — vira navegação real de verdade quando o
+      Passo 2 existir.
+- [ ] Leitura do QR por webcam/imagem (`ZXing.Net`, via `QrReaderService`) —
+      ainda não implementada; por agora só o caminho de colar o texto
+      manualmente (o mais usado no dia a dia, segundo a Secção 7 do roteiro).
 
-Ver Secção 8 do roteiro para o detalhe dos três passos da UI.
+## Próximo passo: Fase 6, Passo 2 — `IssueLicenseView`
+
+1. `Enums/ProductType.cs` (`SchoolManager`, `SmartGest`, `KiVenda`) e
+   `Models/ProductProfile.cs` (módulos/planos por produto) — ainda não
+   existem no Core, entram agora porque o formulário depende deles.
+2. `ViewModels/IssueLicenseViewModel.cs` — recebe o `ActivationRequest` do
+   Passo 1, formulário (produto → filtra `ProductProfile`, cliente, plano,
+   tipo, datas, checkboxes de módulos) → `LicenseIssuer.Issue(...)` com a
+   chave privada (`KeyProvider.LoadPrivateKey`).
+3. `Views/IssueLicenseView.axaml`.
+4. Ligar `ActivationViewModel.RequestConfirmed` a uma navegação real entre
+   as duas views (dentro do `MainWindow`, sem precisar de um framework de
+   navegação — ainda é só um fluxo linear de 2/3 passos).
+
+Ver Secção 8 do roteiro para o detalhe completo dos três passos da UI.
