@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="WeberTech.LicenseGenerator.Views.RegisterView"
+             x:DataType="vm:RegisterViewModel">
+
+  <Design.DataContext>
+    <vm:RegisterViewModel />
+  </Design.DataContext>
+
+  <Grid>
+    <Border Classes="card" Width="380" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <StackPanel Spacing="16">
+
+        <StackPanel Spacing="4" HorizontalAlignment="Center" Margin="0,0,0,8">
+          <TextBlock Classes="headline-md" Text="Criar conta" HorizontalAlignment="Center" />
+          <TextBlock Classes="body-sm" Text="Primeiro acesso à ferramenta do emissor" HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NOME" />
+          <TextBox Text="{Binding DisplayName}" Watermark="ex.: João Silva" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="UTILIZADOR" />
+          <TextBox Text="{Binding Username}" Watermark="ex.: joao.silva" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="PASSWORD" />
+          <TextBox Text="{Binding Password}" PasswordChar="•" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="CONFIRMAR PASSWORD" />
+          <TextBox Text="{Binding ConfirmPassword}" PasswordChar="•" />
+        </StackPanel>
+
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <Button Classes="accent"
+                Content="Criar conta"
+                Command="{Binding RegisterCommand}"
+                IsEnabled="{Binding !IsBusy}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center" />
+
+        <Button Classes="tertiary"
+                Content="Já tenho conta — entrar"
+                Command="{Binding GoToLoginCommand}"
+                HorizontalAlignment="Center" />
+
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

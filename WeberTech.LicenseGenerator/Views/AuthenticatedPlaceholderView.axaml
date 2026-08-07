@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:WeberTech.LicenseGenerator.Views"
+             x:Class="WeberTech.LicenseGenerator.Views.AuthenticatedPlaceholderView">
+
+  <!--
+    ⚠️ TEMPORÁRIO — Fase 6, checkpoint do M2 (autenticação). Existe só para
+    provar que nada fica acessível sem login válido, e que o logout
+    funciona. O M3 (shell de navegação) substitui isto pela sidebar real
+    dos mockups (Dashboard/Emitir/Histórico/Configurações).
+  -->
+  <Grid RowDefinitions="Auto,*">
+
+    <Border Grid.Row="0"
+            Background="{StaticResource SurfaceContainerLowBrush}"
+            BorderBrush="{StaticResource OutlineVariantBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="24,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Grid.Column="0" x:Name="SessionLabel" Classes="body-sm" VerticalAlignment="Center" />
+        <Button Grid.Column="1" x:Name="LogoutButton" Classes="secondary" Content="Sair" />
+      </Grid>
+    </Border>
+
+    <views:DesignSystemPreview Grid.Row="1" />
+
+  </Grid>
+</UserControl>

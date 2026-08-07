@@ -163,44 +163,62 @@ testes usam sempre `FakeWmiQueryService`, por isso correm em qualquer SO.
       `LicenseStoreTests` (save/load, criação de subpastas, ficheiro
       corrompido, carimbo de verificação, caminho padrão).
 
-## Estado atual: Fases 1–5 concluídas · Fase 6 em curso (Passo 1 concluído)
+## Estado atual: Fase 6 redesenhada (mockups do utilizador) — M1 concluído, aguardando validação visual
 
-**Fase 6 — `WeberTech.LicenseGenerator` (Avalonia) — Passo 1: `ActivationView`**
-- [x] Pacote `CommunityToolkit.Mvvm` adicionado ao `LicenseGenerator.csproj`
-      (`[ObservableProperty]`/`[RelayCommand]` via source generators).
-- [x] `ViewModels/ActivationViewModel.cs` — `QrText` (texto colado),
-      `ParseQrTextCommand` (chama `ActivationRequestService.ParseQrText`,
-      já feito na Fase 4), `ParsedRequest` (resultado), `ErrorMessage`
-      (mensagem amigável em `ActivationRequestFormatException`),
-      `ContinueCommand` (só habilitado com um pedido interpretado — via
-      `[NotifyCanExecuteChangedFor]`), `ClearCommand`. Expõe o evento
-      `RequestConfirmed`, que o Passo 2 (`IssueLicenseView`) vai consumir
-      para navegar com o `ActivationRequest` já validado.
-- [x] `Views/ActivationView.axaml` (+ code-behind) — `TextBox` para colar o
-      Base64 do QR, botões "Interpretar pedido"/"Limpar", mensagem de erro,
-      e um painel com `ProductId`/`MachineId`/`RequestId`/`RequestedAt` do
-      pedido interpretado. Bindings compilados (`x:DataType`), consistente
-      com `AvaloniaUseCompiledBindingsByDefault=true` já configurado.
-- [x] `App.axaml.cs` — `MainWindow` agora mostra a `ActivationView` (troquei
-      a janela em branco da Fase 1). `RequestConfirmed` por agora só
-      escreve no output de debug — vira navegação real de verdade quando o
-      Passo 2 existir.
-- [ ] Leitura do QR por webcam/imagem (`ZXing.Net`, via `QrReaderService`) —
-      ainda não implementada; por agora só o caminho de colar o texto
-      manualmente (o mais usado no dia a dia, segundo a Secção 7 do roteiro).
+A Fase 6 foi reformulada a partir de mockups fornecidos (design system
+**Cyber-Shield Enterprise**: navy escuro + azul elétrico, Inter + JetBrains
+Mono). Plano completo em 12 marcos (M0–M11) combinado na conversa — decisão
+de plataforma (M0): **desktop Avalonia**, não web. O trabalho das Fases 1–5
+(Core: Crypto, Machine ID, `.wta`) não muda em nada — só a camada de UI do
+`LicenseGenerator` está a ser refeita.
 
-## Próximo passo: Fase 6, Passo 2 — `IssueLicenseView`
+**M0 — Decisão de plataforma:** ✅ Desktop Avalonia (confirmado).
 
-1. `Enums/ProductType.cs` (`SchoolManager`, `SmartGest`, `KiVenda`) e
-   `Models/ProductProfile.cs` (módulos/planos por produto) — ainda não
-   existem no Core, entram agora porque o formulário depende deles.
-2. `ViewModels/IssueLicenseViewModel.cs` — recebe o `ActivationRequest` do
-   Passo 1, formulário (produto → filtra `ProductProfile`, cliente, plano,
-   tipo, datas, checkboxes de módulos) → `LicenseIssuer.Issue(...)` com a
-   chave privada (`KeyProvider.LoadPrivateKey`).
-3. `Views/IssueLicenseView.axaml`.
-4. Ligar `ActivationViewModel.RequestConfirmed` a uma navegação real entre
-   as duas views (dentro do `MainWindow`, sem precisar de um framework de
-   navegação — ainda é só um fluxo linear de 2/3 passos).
+**M1 — Fundação visual (design tokens):** ✅ implementado, ⏳ aguardando
+confirmação visual antes de M2.
+- [x] Fonte **JetBrains Mono** (Regular/Medium/SemiBold/Bold, licença OFL)
+      baixada do repositório oficial e embutida em
+      `Assets/Fonts/JetBrainsMono/*.ttf` — não depende de estar instalada
+      no PC do cliente. Inter já vinha via `Avalonia.Fonts.Inter`
+      (`WithInterFont()`, Program.cs, desde a Fase 1).
+- [x] `Styles/DesignTokens.axaml` — todas as cores do `DESIGN.md` como
+      `Color`/`SolidColorBrush`, tamanhos de tipografia, radius (2/4/6/8px),
+      spacing (unidade base 4px).
+- [x] `Styles/Styles.axaml` — classes reutilizáveis: `TextBlock` (`.display-lg`,
+      `.headline-lg/md`, `.body-lg/sm`, `.label-md`, `.mono-md`), `Border`
+      (`.card`, `.mono-well` para chaves/IDs, `.badge`/`.badge-success`/`.badge-error`),
+      `Button` (`.accent`/`.secondary`/`.tertiary`, com glow simples no hover
+      do `.accent` — `BoxShadow` azul a 30%, ver Secção "Elevação" do
+      `DESIGN.md`), `TextBox` com borda azul no foco.
+- [x] `App.axaml` — `RequestedThemeVariant="Dark"`, tokens mergeados em
+      `Application.Resources`, `Styles.axaml` incluído depois do
+      `FluentTheme` (pra conseguir sobrepor os defaults).
+- [x] `Views/DesignSystemPreview.axaml` — tela de verificação temporária
+      (card + badges + 3 variantes de botão + texto em `mono-md`),
+      atualmente é o que a `MainWindow` mostra. **Não é uma tela final** —
+      só existe para confirmar visualmente antes do M2.
+- [ ] **Ainda por confirmar:** abrir no VS Code (Avalonia Previewer) ou
+      rodar (`F5`) e conferir se cores/fontes batem com os mockups.
 
-Ver Secção 8 do roteiro para o detalhe completo dos três passos da UI.
+⚠️ **Nota de segurança à frente (M9):** o mockup de Configurações mostra uma
+"Chave Mestra" em texto copiável. Isso conflita com a arquitetura RSA
+assimétrica já construída (Secção 4 do roteiro) — a chave privada nunca
+pode aparecer em texto nem ser copiável. Vamos adaptar essa tela para
+mostrar metadados da chave (fingerprint/versão/data), não o valor — já
+sinalizado no plano, ainda não é bloqueante agora.
+
+## Próximo passo: M2 — Autenticação (Login/Register)
+
+1. Entidade `User` (nome, username/email, password hash) — provavelmente em
+   `WeberTech.LicenseGenerator/Persistence/`, junto com o histórico de
+   emissões (SQLite local).
+2. Hashing de password (ex.: `BCrypt.Net` ou `Rfc2898DeriveBytes`/PBKDF2 do
+   BCL, evitar dependência extra se der).
+3. `Views/LoginView.axaml` + `Views/RegisterView.axaml` seguindo o visual
+   já estabelecido no M1 (`.card`, `.accent`, `TextBox` estilizado).
+4. Sessão simples em memória — nenhuma tela pós-login acessível sem
+   autenticação válida.
+
+Ver plano completo (M0–M11) na conversa — ainda não copiado para o roteiro
+`.md` principal; farei isso quando a Fase 6 estiver mais estável, para não
+reescrever o documento a cada marco.
