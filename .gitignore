@@ -1,0 +1,18 @@
+## .NET
+bin/
+obj/
+*.user
+.vs/
+
+## Chaves — NUNCA versionar
+*.pem
+wt_private.*
+Properties/wt_public.pem
+
+## Ficheiros de licença emitidos / histórico local
+*.wta
+WeberTech.LicenseGenerator/*.db
+
+## SO
+.DS_Store
+Thumbs.db

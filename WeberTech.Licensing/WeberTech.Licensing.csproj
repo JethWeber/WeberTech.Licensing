@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WeberTech.Licensing</RootNamespace>
+    <AssemblyName>WeberTech.Licensing</AssemblyName>
+
+    <!-- Metadados de empacotamento (Fase 11 — feed NuGet privado) -->
+    <PackageId>WeberTech.Licensing</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Weber Tech</Authors>
+    <Description>Sistema de licenciamento offline com chaves assimetricas, ativacao por QR Code e ficheiros de licenca .wta.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Geracao do QR Code do pedido de ativacao (Fase 4) -->
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <!-- Consultas WMI para o Machine ID (Fase 3) -->
+    <PackageReference Include="System.Management" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Chave publica embutida no binario (Fase 2).
+      NOTA: o wt_public.pem presente neste repositorio é uma chave de
+      DESENVOLVIMENTO/TESTE gerada localmente — NÃO é o par de chaves real
+      da Weber Tech. Antes de qualquer emissão de licença real, substituir
+      este ficheiro pela chave pública definitiva (Secção 4 do roteiro) e
+      gerar/embutir a respetiva chave privada apenas no ambiente do
+      WeberTech.LicenseGenerator. A chave PRIVADA NUNCA entra neste projeto.
+      LogicalName fixo para que KeyProvider a localize de forma previsível
+      independentemente do namespace/pasta.
+    -->
+    <EmbeddedResource Include="Properties\wt_public.pem" Condition="Exists('Properties\wt_public.pem')">
+      <LogicalName>wt_public.pem</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
