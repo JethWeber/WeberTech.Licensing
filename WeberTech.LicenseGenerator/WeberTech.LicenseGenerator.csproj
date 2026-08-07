@@ -11,10 +11,14 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 
     <!--
-      Uso interno da Weber Tech APENAS.
-      Este projeto e o UNICO que carrega/manuseia a chave privada RSA
-      (ver Fase 2 e Secção 0.3 do roteiro). Nunca deve ser distribuído a clientes.
-    -->
+      Dev em Linux (Mint), destino de execução real é Windows (WMI, Fase 3).
+      RuntimeIdentifiers pré-declarados para permitir cross-publish direto
+      a partir do Linux, sem precisar de uma máquina Windows para compilar:
+        dotnet publish -c Release -r win-x64 -self-contained true
+      O .NET SDK descarrega os runtime packs win-x64 automaticamente no
+      restore — não precisas instalar mais nada manualmente para isto.
+    --> 
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

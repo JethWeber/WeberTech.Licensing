@@ -445,7 +445,7 @@ Checklist a validar antes de qualquer emissão real de licença:
 
 ## 14. Pendências Reais Ainda em Aberto
 
-1. **Escolha final do padding RSA** — a documentação usa `RSASignaturePadding.Pkcs1` nos exemplos de código, mas cita "PKCS#1 v1.5 ou PSS" como opções válidas (Secção 4). Decidir e fixar um dos dois antes da Fase 2 (não é possível migrar depois sem invalidar licenças já emitidas).
+1. ~~**Escolha final do padding RSA**~~ — **Decidido:** `RSASignaturePadding.Pss`. Fixado em `SignatureService.cs` (constante `AlgorithmIdentifier = "RSA-SHA256-PSS"`, a gravar no campo `algorithm` do envelope `.wta` na Fase 5). Os exemplos de código originais do PDF usam PKCS#1 v1.5, mas a implementação real segue esta decisão — não usar Pkcs1 em nenhum ponto novo do código.
 2. **Modo híbrido (validação online opcional)** — mencionado na Secção 15 do PDF como extensão futura; não faz parte do escopo desta primeira versão, mas o formato do `.wta` já deve ser tratado como estável para não quebrar esse caminho depois.
 3. **Rotação de chaves** — o campo `keyVersion` no envelope já existe para isso, mas o mecanismo de "quais versões de chave pública o validador aceita" ainda não está desenhado; só entra em jogo quando existir uma segunda geração de chaves.
 
