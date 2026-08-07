@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WeberTech License Generator - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#c1c6d7",
+                        "tertiary": "#bec6e0",
+                        "secondary": "#b9c8de",
+                        "inverse-primary": "#005cbc",
+                        "on-tertiary-container": "#22293d",
+                        "on-surface": "#dce1fb",
+                        "surface-container-high": "#23293c",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#0c1324",
+                        "on-secondary-fixed": "#0d1c2d",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "background": "#0c1324",
+                        "outline": "#8b91a0",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "tertiary-fixed": "#dae2fd",
+                        "surface-container": "#191f31",
+                        "surface-container-low": "#151b2d",
+                        "primary-fixed-dim": "#abc7ff",
+                        "surface-tint": "#abc7ff",
+                        "surface-variant": "#2e3447",
+                        "outline-variant": "#414754",
+                        "on-primary": "#002f66",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "surface-container-lowest": "#070d1f",
+                        "tertiary-container": "#8990a8",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-primary-fixed-variant": "#004590",
+                        "on-primary-container": "#002859",
+                        "surface-container-highest": "#2e3447",
+                        "primary": "#abc7ff",
+                        "inverse-surface": "#dce1fb",
+                        "primary-container": "#448fff",
+                        "on-background": "#dce1fb",
+                        "inverse-on-surface": "#2a3043",
+                        "on-secondary": "#233143",
+                        "primary-fixed": "#d7e2ff",
+                        "surface-bright": "#33394c",
+                        "secondary-container": "#39485a",
+                        "on-secondary-container": "#a7b6cc",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#d4e4fa",
+                        "on-primary-fixed": "#001b3f",
+                        "on-tertiary": "#283044",
+                        "surface": "#0c1324",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "margin": "32px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "mono-md": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .glow-active {
+            box-shadow: 0 0 8px rgba(171, 199, 255, 0.3);
+        }
+        .card-surface {
+            background-color: theme('colors.surface-container');
+            border: 1px solid theme('colors.outline-variant' / 20%);
+        }
+        
+        /* Custom Chart Bars - simplified for visual */
+        .bar-chart-container {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+            gap: 1rem;
+            padding-top: 2rem;
+        }
+        .chart-bar {
+            flex: 1;
+            background-color: theme('colors.primary');
+            border-top-left-radius: theme('borderRadius.DEFAULT');
+            border-top-right-radius: theme('borderRadius.DEFAULT');
+            position: relative;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, height 0.5s ease;
+        }
+        .chart-bar:hover {
+            opacity: 1;
+            box-shadow: 0 0 12px rgba(171, 199, 255, 0.4);
+        }
+        .chart-bar::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: theme('colors.on-surface-variant');
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        
+        /* Pulse Animation for Progress/Status */
+        @keyframes subtle-pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        .status-pulse {
+            animation: subtle-pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden font-body-md text-body-md antialiased">
+<!-- SideNavBar -->
+<nav class="h-screen w-64 left-0 top-0 fixed bg-surface-container-low border-r border-outline-variant/20 flex flex-col py-6 z-40">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-surface-tint tracking-tight">Generator Tool</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Enterprise Suite v2.4</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1">
+<!-- Active Item: Dashboard -->
+<a class="bg-secondary-container text-on-secondary-container border-l-4 border-primary rounded-r-full my-1 mr-4 pl-4 py-3 flex items-center gap-3 ring-1 ring-primary/30 shadow-[0_0_8px_rgba(171,199,255,0.3)]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md font-semibold">Dashboard</span>
+</a>
+<!-- Inactive Items -->
+<a class="text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-r-full my-1 mr-4 pl-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-label-md text-label-md font-medium">Issue License</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-r-full my-1 mr-4 pl-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md font-medium">History</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-r-full my-1 mr-4 pl-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md font-medium">Settings</span>
+</a>
+</div>
+<!-- CTA -->
+<div class="px-4 mb-6">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-[0_0_8px_rgba(171,199,255,0.3)]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New License
+            </button>
+</div>
+<!-- Footer Navigation -->
+<div class="mt-auto border-t border-outline-variant/20 pt-4">
+<a class="text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-r-full my-1 mr-4 pl-4 py-2 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-r-full my-1 mr-4 pl-4 py-2 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="font-label-md text-label-md">Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 h-full overflow-y-auto bg-surface-dim">
+<!-- TopAppBar (Structural simulation for desktop layout consistency) -->
+<header class="flex justify-between items-center px-8 py-4 w-full z-30 bg-surface-dim border-b border-outline-variant/20 sticky top-0">
+<h2 class="font-headline-md text-headline-md font-semibold text-primary">Visão Geral do Sistema</h2>
+<div class="flex items-center gap-6">
+<!-- Search -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-surface-container-high border border-outline-variant/30 text-on-surface rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 w-64 transition-all" placeholder="Buscar licenças..." type="text"/>
+</div>
+<div class="flex items-center gap-4 border-l border-outline-variant/30 pl-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full status-pulse"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-8 max-w-[1440px] mx-auto space-y-8">
+<!-- Summary Cards Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1: Total Licenses -->
+<div class="card-surface rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">key</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Total de Licenças</p>
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">vpn_key</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-display-lg text-display-lg text-on-surface font-bold">14,208</h3>
+</div>
+<div class="mt-2 flex items-center gap-1 text-tertiary-fixed-dim text-sm">
+<span class="material-symbols-outlined text-[16px] text-[#A8DAB5]">trending_up</span>
+<span class="text-[#A8DAB5] font-medium">+12.5%</span>
+<span>vs mês anterior</span>
+</div>
+</div>
+<!-- Card 2: Active Subscriptions -->
+<div class="card-surface rounded-xl p-6 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Assinaturas Ativas</p>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-display-lg text-display-lg text-on-surface font-bold">11,940</h3>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 mt-4">
+<div class="bg-primary h-1.5 rounded-full" style="width: 84%"></div>
+</div>
+<p class="mt-2 text-xs text-on-surface-variant text-right">84% de conversão</p>
+</div>
+<!-- Card 3: Expiring Soon -->
+<div class="card-surface rounded-xl p-6 relative overflow-hidden group ring-1 ring-error/30 bg-gradient-to-br from-surface-container to-error-container/10">
+<div class="flex justify-between items-start mb-4">
+<p class="font-label-md text-label-md text-error uppercase">Expirando em Breve</p>
+<div class="w-8 h-8 rounded-full bg-error-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-[18px]">warning</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-display-lg text-display-lg text-on-surface font-bold">342</h3>
+</div>
+<div class="mt-2 flex items-center gap-1 text-sm text-on-surface-variant">
+<span>Requer atenção nos próximos 30 dias</span>
+</div>
+</div>
+<!-- Card 4: Revenue/Growth -->
+<div class="card-surface rounded-xl p-6 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Receita Estimada</p>
+<div class="w-8 h-8 rounded-full bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[18px]">payments</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-display-lg text-display-lg text-on-surface font-bold">R$ 2.4M</h3>
+</div>
+<div class="mt-2 flex items-center gap-1 text-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">arrow_upward</span>
+<span class="text-primary font-medium">Estável</span>
+</div>
+</div>
+</div>
+<!-- Main Data Section (Chart + Activity) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Chart Area -->
+<div class="lg:col-span-2 card-surface rounded-xl p-6 flex flex-col min-h-[400px]">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Emissão de Licenças</h3>
+<p class="text-sm text-on-surface-variant">Últimos 6 meses</p>
+</div>
+<div class="flex bg-surface-container-high rounded-lg p-1 border border-outline-variant/30">
+<button class="px-3 py-1 text-xs font-medium bg-surface-variant text-on-surface rounded shadow-sm">Mensal</button>
+<button class="px-3 py-1 text-xs font-medium text-on-surface-variant hover:text-on-surface">Semanal</button>
+</div>
+</div>
+<!-- Simulated Bar Chart -->
+<div class="flex-1 border-b border-l border-outline-variant/30 pb-8 pl-4 relative mt-4">
+<!-- Y-axis lines -->
+<div class="absolute w-full border-t border-outline-variant/10 top-0 left-4"></div>
+<div class="absolute w-full border-t border-outline-variant/10 top-1/4 left-4"></div>
+<div class="absolute w-full border-t border-outline-variant/10 top-2/4 left-4"></div>
+<div class="absolute w-full border-t border-outline-variant/10 top-3/4 left-4"></div>
+<div class="bar-chart-container pl-2 pr-6">
+<div class="chart-bar" data-label="Out" style="height: 40%;"></div>
+<div class="chart-bar" data-label="Nov" style="height: 55%;"></div>
+<div class="chart-bar" data-label="Dez" style="height: 45%;"></div>
+<div class="chart-bar" data-label="Jan" style="height: 70%;"></div>
+<div class="chart-bar" data-label="Fev" style="height: 60%;"></div>
+<div class="chart-bar bg-primary-container glow-active" data-label="Mar" style="height: 85%;"></div>
+</div>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="card-surface rounded-xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Atividade Recente</h3>
+<button class="text-primary text-sm hover:underline font-medium">Ver tudo</button>
+</div>
+<div class="flex-1 overflow-y-auto pr-2 space-y-4">
+<!-- Activity Item 1 -->
+<div class="flex gap-4 p-3 rounded-lg hover:bg-surface-variant/30 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-on-surface truncate">Licença Enterprise Gerada</p>
+<p class="text-xs text-on-surface-variant truncate">Cliente: TechCorp Brasil</p>
+<div class="mt-1 font-mono-md text-mono-md text-xs text-primary-fixed-dim bg-surface-container-lowest px-2 py-0.5 rounded inline-block border border-outline-variant/20">
+                                    WT-ENT-X92M-L4
+                                </div>
+</div>
+<div class="text-xs text-on-surface-variant shrink-0">Agora</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex gap-4 p-3 rounded-lg hover:bg-surface-variant/30 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="w-10 h-10 rounded bg-secondary-container/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-[20px]">update</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-on-surface truncate">Renovação de Assinatura</p>
+<p class="text-xs text-on-surface-variant truncate">Cliente: Global Systems</p>
+</div>
+<div class="text-xs text-on-surface-variant shrink-0">2h atrás</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex gap-4 p-3 rounded-lg hover:bg-surface-variant/30 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="w-10 h-10 rounded bg-error/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error text-[20px]">block</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-on-surface truncate">Licença Revogada</p>
+<p class="text-xs text-on-surface-variant truncate">Motivo: Violação de Termos</p>
+<div class="mt-1 font-mono-md text-mono-md text-xs text-on-surface-variant bg-surface-container-lowest px-2 py-0.5 rounded inline-block border border-outline-variant/20 line-through">
+                                    WT-PRO-A1B2-C3
+                                </div>
+</div>
+<div class="text-xs text-on-surface-variant shrink-0">5h atrás</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="flex gap-4 p-3 rounded-lg hover:bg-surface-variant/30 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-on-surface truncate">Licença Pro Gerada</p>
+<p class="text-xs text-on-surface-variant truncate">Cliente: DevStudios</p>
+</div>
+<div class="text-xs text-on-surface-variant shrink-0">Ontem</div>
+</div>
+<!-- Activity Item 5 -->
+<div class="flex gap-4 p-3 rounded-lg hover:bg-surface-variant/30 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-on-surface truncate">Licença Starter Gerada</p>
+<p class="text-xs text-on-surface-variant truncate">Cliente: Startup XYZ</p>
+</div>
+<div class="text-xs text-on-surface-variant shrink-0">Ontem</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

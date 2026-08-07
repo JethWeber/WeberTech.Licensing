@@ -16,3 +16,7 @@ WeberTech.LicenseGenerator/*.db
 ## SO
 .DS_Store
 Thumbs.db
+
+## Doc
+.obsidian/*
+Doc/.obsidian

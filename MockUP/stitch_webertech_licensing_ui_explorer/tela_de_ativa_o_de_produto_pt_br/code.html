@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ativação de Produto Necessária - Licenciamento WeberTech</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#0c1324",
+                        "surface-tint": "#abc7ff",
+                        "surface-container-high": "#23293c",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "surface-container-low": "#151b2d",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "surface-container": "#191f31",
+                        "primary-fixed": "#d7e2ff",
+                        "outline-variant": "#414754",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "primary": "#abc7ff",
+                        "secondary": "#b9c8de",
+                        "inverse-primary": "#005cbc",
+                        "surface-bright": "#33394c",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#070d1f",
+                        "tertiary-container": "#8990a8",
+                        "secondary-fixed": "#d4e4fa",
+                        "on-secondary-container": "#a7b6cc",
+                        "on-primary": "#002f66",
+                        "inverse-surface": "#dce1fb",
+                        "on-secondary": "#233143",
+                        "inverse-on-surface": "#2a3043",
+                        "surface": "#0c1324",
+                        "on-surface": "#dce1fb",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#283044",
+                        "outline": "#8b91a0",
+                        "on-primary-fixed-variant": "#004590",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-surface-variant": "#c1c6d7",
+                        "surface-variant": "#2e3447",
+                        "secondary-container": "#39485a",
+                        "on-tertiary-container": "#22293d",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "on-background": "#dce1fb",
+                        "on-primary-fixed": "#001b3f",
+                        "background": "#0c1324",
+                        "primary-container": "#448fff",
+                        "surface-container-highest": "#2e3447",
+                        "on-primary-container": "#002859",
+                        "tertiary-fixed": "#dae2fd",
+                        "tertiary": "#bec6e0",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#0d1c2d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "32px",
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-md": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "mono-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .active-glow {
+            box-shadow: 0 0 8px rgba(171,199,255,0.3);
+        }
+        .active-glow-hover:hover {
+            box-shadow: 0 0 8px rgba(171,199,255,0.3);
+        }
+        .glass-panel {
+            background: rgba(21, 27, 45, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface min-h-screen flex items-center justify-center p-4 md:p-8 relative overflow-hidden font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Atmospheric Effect -->
+<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl mix-blend-screen"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-inverse-primary/5 rounded-full blur-3xl mix-blend-screen"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiIvPjwvc3ZnPg==')] opacity-20"></div>
+</div>
+<!-- Activation Modal Container -->
+<div class="glass-panel w-full max-w-[960px] rounded-xl shadow-2xl relative z-10 flex flex-col border border-outline-variant/30">
+<!-- Header -->
+<div class="flex flex-col items-center justify-center p-8 border-b border-outline-variant/20 relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+<!-- WeberTech Logo Mockup -->
+<div class="flex items-center gap-3 mb-4">
+<div class="relative w-12 h-14 flex items-center justify-center">
+<span class="material-symbols-outlined text-[48px] text-surface-tint" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="material-symbols-outlined text-[24px] text-surface-dim absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tighter leading-none">Weber<span class="text-primary">Tech</span></span>
+<span class="font-label-md text-label-md text-on-surface-variant tracking-[0.2em] uppercase mt-1">Licenciamento</span>
+</div>
+</div>
+<h1 class="font-headline-md text-headline-md text-error tracking-tight flex items-center gap-2">
+<span class="material-symbols-outlined text-error">warning</span>
+                Ativação de Produto Necessária
+            </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 text-center max-w-lg">
+                Esta instalação do KiVenda não está autorizada no momento. Por favor, ative sua licença para continuar usando o pacote de software.
+            </p>
+</div>
+<!-- Main Content Area -->
+<div class="flex flex-col md:flex-row p-8 gap-8 md:gap-12">
+<!-- Left Column: Machine ID & QR -->
+<div class="w-full md:w-5/12 flex flex-col gap-6 border-b md:border-b-0 md:border-r border-outline-variant/20 pb-8 md:pb-0 md:pr-8">
+<div class="flex flex-col items-center gap-4 bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/30 relative group">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+<h2 class="font-label-md text-label-md text-on-surface uppercase tracking-wider self-start flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+                        Assinatura de Hardware
+                    </h2>
+<!-- QR Code Placeholder -->
+<div class="w-48 h-48 bg-white p-2 rounded flex items-center justify-center shadow-inner relative">
+<img class="w-full h-full object-cover" data-alt="A stark, high-contrast black and white QR code centered on a clean white background, designed for high-tech digital scanning in a secure corporate modern environment. The overall mood is precise and technical." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB2bTZxtUKT4rX-bSusi6L4h3JYufKtqrHF7zKlayEFSJ30TfeDXNsetClYj67NmmOSEHHhvTistOtvNDaTHS0XoKwLwN758HZzI92EoH9G0b17eZA_onVLzf0S-JoG2nAPsdj0a3WhrzdTr01fXWnMtCJsHAkFXM1Z85q_VnQZ_wtbZAirp9cWRWIHpf98VF6dgKTrCHR4bautWb-cmXxXKFSDICe-cGN_Hwi74torKJfhJ9nu_eYsg"/>
+<!-- Scanning line effect -->
+<div class="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_8px_#abc7ff] opacity-70 animate-[scan_2s_ease-in-out_infinite]"></div>
+</div>
+<div class="w-full mt-2">
+<label class="font-label-md text-label-md text-on-surface-variant mb-1 block">ID da Máquina</label>
+<div class="flex items-center gap-2 w-full">
+<div class="bg-surface-dim font-mono-md text-mono-md text-on-surface p-3 rounded border border-outline-variant/50 w-full text-center tracking-wider truncate" id="machine-id">
+                                4F8A-92B1-C7D6-E5F0
+                            </div>
+<button class="p-3 bg-surface-container hover:bg-surface-variant rounded border border-outline-variant/50 text-on-surface-variant hover:text-primary transition-colors duration-200 flex-shrink-0 active-glow-hover group" onclick="copyMachineId()" title="Copiar para a área de transferência">
+<span class="material-symbols-outlined text-[20px] group-active:scale-95 transition-transform">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Instructions & Import -->
+<div class="w-full md:w-7/12 flex flex-col gap-6">
+<div>
+<h2 class="font-headline-md text-[20px] font-semibold text-on-surface mb-4">Passos para Ativação</h2>
+<ol class="space-y-4 font-body-sm text-body-sm text-on-surface-variant relative">
+<!-- Connecting line -->
+<div class="absolute left-[11px] top-4 bottom-4 w-px bg-outline-variant/30 z-0"></div>
+<li class="flex items-start gap-4 relative z-10">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface font-semibold text-[12px] flex-shrink-0 mt-0.5">1</div>
+<div>
+<strong class="text-on-surface block">Enviar Assinatura de Hardware</strong>
+                                Fotografe o código QR ou copie o ID da Máquina e envie para o Suporte de Licenciamento WeberTech.
+                            </div>
+</li>
+<li class="flex items-start gap-4 relative z-10">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface font-semibold text-[12px] flex-shrink-0 mt-0.5">2</div>
+<div>
+<strong class="text-on-surface block">Receber Arquivo de Licença</strong>
+                                O suporte irá gerar e retornar um arquivo de licença seguro <code class="bg-surface-dim text-primary px-1 rounded font-mono-md">.wta</code>.
+                            </div>
+</li>
+<li class="flex items-start gap-4 relative z-10">
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary flex items-center justify-center text-primary font-semibold text-[12px] flex-shrink-0 mt-0.5 active-glow">3</div>
+<div>
+<strong class="text-on-surface block text-primary">Importar Licença</strong>
+                                Arraste e solte seu arquivo de licença abaixo para ativar o KiVenda.
+                            </div>
+</li>
+</ol>
+</div>
+<!-- Dropzone -->
+<div class="mt-4 border-2 border-dashed border-outline-variant/50 rounded-lg p-8 flex flex-col items-center justify-center text-center bg-surface-container-lowest/50 hover:bg-surface-container hover:border-primary/50 transition-all duration-300 group cursor-pointer" id="dropzone">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors duration-300 group-hover:active-glow">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">upload_file</span>
+</div>
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium mb-1">Importar Arquivo de Licença (.wta)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Arraste e solte seu arquivo aqui, ou clique para procurar.</p>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded hover:bg-primary-fixed transition-colors duration-200 active-glow uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">folder_open</span>
+                        Procurar Arquivos
+                    </button>
+<input accept=".wta" class="hidden" id="file-input" type="file"/>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="bg-surface-container-low px-8 py-4 border-t border-outline-variant/20 flex flex-col sm:flex-row justify-between items-center gap-4 rounded-b-xl">
+<div class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Ambiente de Licenciamento Seguro v2.4</span>
+</div>
+<a class="flex items-center gap-2 text-primary hover:text-primary-fixed transition-colors duration-200 font-label-md text-label-md uppercase tracking-wider group" href="#">
+<span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">support_agent</span>
+                Contatar Suporte Técnico
+            </a>
+</div>
+</div>
+<!-- Animation Keyframes -->
+<style>
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+    </style>
+<!-- Interactions -->
+<script>
+        function copyMachineId() {
+            const idText = document.getElementById('machine-id').innerText;
+            navigator.clipboard.writeText(idText).then(() => {
+                const btn = document.querySelector('button[title="Copiar para a área de transferência"]');
+                const icon = btn.querySelector('span');
+                const originalIcon = icon.innerText;
+                
+                icon.innerText = 'check';
+                icon.classList.add('text-primary');
+                
+                setTimeout(() => {
+                    icon.innerText = originalIcon;
+                    icon.classList.remove('text-primary');
+                }, 2000);
+            });
+        }
+
+        // Simple Dropzone logic
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+
+        dropzone.addEventListener('click', () => fileInput.click());
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropzone.classList.add('border-primary', 'bg-surface-container');
+            dropzone.classList.remove('border-outline-variant/50', 'bg-surface-container-lowest/50');
+        }
+
+        function unhighlight(e) {
+            dropzone.classList.remove('border-primary', 'bg-surface-container');
+            dropzone.classList.add('border-outline-variant/50', 'bg-surface-container-lowest/50');
+        }
+
+        dropzone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if(files.length > 0) {
+                const file = files[0];
+                if(file.name.endsWith('.wta')) {
+                    // Simulate import process
+                    dropzone.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-4">
+                            <span class="material-symbols-outlined text-[48px] text-primary animate-pulse mb-2">sync</span>
+                            <h3 class="font-body-lg text-body-lg text-primary font-medium">Verificando Licença...</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">${file.name}</p>
+                        </div>
+                    `;
+                } else {
+                    alert('Formato de arquivo inválido. Por favor, faça o upload de um arquivo .wta.');
+                }
+            }
+        }
+    </script>
+</body></html>
