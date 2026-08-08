@@ -50,10 +50,8 @@ public partial class App : Application
 
             void ShowAuthenticatedArea(User user)
             {
-                // M3 (shell de navegação) ainda não existe — por agora, área
-                // autenticada provisória, só para provar que o gate de login
-                // funciona de ponta a ponta (incluindo o logout).
-                mainWindow.Content = new AuthenticatedPlaceholderView(user, ShowLogin);
+                var shellViewModel = new NavigationShellViewModel(user, ShowLogin);
+                mainWindow.Content = new NavigationShellView { DataContext = shellViewModel };
             }
 
             if (hasAnyUser)
@@ -62,35 +60,6 @@ public partial class App : Application
                 ShowRegister(); // bootstrap: primeiro utilizador da ferramenta
 
             desktop.MainWindow = mainWindow;
-
-            // Código do M0/M1 (ActivationView/DesignSystemPreview isoladas)
-            // fica comentado abaixo, intacto, para religar no M3/M6.
-            //
-            // desktop.MainWindow = new Window
-            // {
-            //     Title = "WeberTech.LicenseGenerator — M1 (verificação visual)",
-            //     Width = 900,
-            //     Height = 700,
-            //     Content = new DesignSystemPreview()
-            // };
-            //
-            // var activationViewModel = new ActivationViewModel();
-            // activationViewModel.RequestConfirmed += (_, request) =>
-            // {
-            //     var issueViewModel = new IssueLicenseViewModel(
-            //         request,
-            //         new LicenseIssuer(new SignatureService()),
-            //         new KeyProvider(),
-            //         new FileDialogService(() => desktop.MainWindow));
-            //     desktop.MainWindow!.Content = new IssueLicenseView { DataContext = issueViewModel };
-            // };
-            // desktop.MainWindow = new Window
-            // {
-            //     Title = "WeberTech.LicenseGenerator",
-            //     Width = 760,
-            //     Height = 640,
-            //     Content = new ActivationView { DataContext = activationViewModel }
-            // };
         }
 
         base.OnFrameworkInitializationCompleted();

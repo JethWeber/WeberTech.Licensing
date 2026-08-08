@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="WeberTech.LicenseGenerator.Views.PlaceholderView">
+
+  <!--
+    Usada pelo NavigationShellView (M3) para as páginas cujo conteúdo real
+    ainda não foi construído (Dashboard = M8, Histórico = M7,
+    Configurações = M9). Existe só para a navegação do M3 ser honesta —
+    nenhuma dessas telas finge ter dados reais antes da hora.
+  -->
+  <Grid Margin="32">
+    <StackPanel Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+      <TextBlock x:Name="TitleText" Classes="headline-md" HorizontalAlignment="Center" />
+      <TextBlock x:Name="NoteText" Classes="body-sm" HorizontalAlignment="Center" />
+    </StackPanel>
+  </Grid>
+</UserControl>

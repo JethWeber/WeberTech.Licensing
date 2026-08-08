@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="WeberTech.LicenseGenerator.Views.NavigationShellView"
+             x:DataType="vm:NavigationShellViewModel">
+
+  <Grid ColumnDefinitions="248,*">
+
+    <!-- ============ Sidebar ============ -->
+    <Border Grid.Column="0"
+            Background="{StaticResource SurfaceContainerLowestBrush}"
+            BorderBrush="{StaticResource OutlineVariantBrush}"
+            BorderThickness="0,0,1,0">
+      <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16">
+
+        <StackPanel Grid.Row="0" Spacing="2" Margin="4,8,4,20">
+          <TextBlock Classes="headline-md" Text="WeberTech" />
+          <TextBlock Classes="body-sm" Text="Licensing · Enterprise Suite" />
+        </StackPanel>
+
+        <Button Grid.Row="1"
+                Classes="accent"
+                Content="+ Nova Licença"
+                Command="{Binding NavigateToIssueLicenseCommand}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Margin="4,0,4,20" />
+
+        <StackPanel Grid.Row="2" Spacing="4">
+          <Button Classes="nav-item" Classes.active="{Binding IsDashboardActive}"
+                  Content="Dashboard" Command="{Binding NavigateToDashboardCommand}" />
+          <Button Classes="nav-item" Classes.active="{Binding IsIssueLicenseActive}"
+                  Content="Emitir Licença" Command="{Binding NavigateToIssueLicenseCommand}" />
+          <Button Classes="nav-item" Classes.active="{Binding IsHistoryActive}"
+                  Content="Histórico" Command="{Binding NavigateToHistoryCommand}" />
+          <Button Classes="nav-item" Classes.active="{Binding IsSettingsActive}"
+                  Content="Configurações" Command="{Binding NavigateToSettingsCommand}" />
+        </StackPanel>
+
+        <Border Grid.Row="3"
+                BorderBrush="{StaticResource OutlineVariantBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="4,12,4,4">
+          <StackPanel Spacing="8">
+            <TextBlock Classes="body-sm" Text="{Binding CurrentUser.DisplayName}" />
+            <Button Classes="secondary"
+                    Content="Sair"
+                    Command="{Binding LogoutCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+          </StackPanel>
+        </Border>
+
+      </Grid>
+    </Border>
+
+    <!-- ============ Conteúdo da página atual ============ -->
+    <ContentControl Grid.Column="1" Content="{Binding CurrentPageContent}" />
+
+  </Grid>
+</UserControl>

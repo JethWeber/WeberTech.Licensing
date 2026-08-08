@@ -146,5 +146,24 @@
     <Setter Property="BorderBrush" Value="{StaticResource ErrorBrush}" />
     <Setter Property="Opacity" Value="0.9" />
   </Style>
+  <!-- ============ Navegação (sidebar, M3) ============ -->
+  <Style Selector="Button.nav-item">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceVariantBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="Padding" Value="12,10" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusDefault}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="Button.nav-item:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SurfaceContainerHighBrush}" />
+  </Style>
+  <Style Selector="Button.nav-item.active">
+    <Setter Property="Background" Value="{StaticResource SurfaceContainerHighBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
 
 </Styles>
