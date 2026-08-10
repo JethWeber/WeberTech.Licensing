@@ -37,6 +37,16 @@
 
     <!-- Historico local de licencas emitidas (Fase 6 / HistoryView) -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+
+    <!--
+      Necessário para a ferramenta `dotnet ef` (migrations) conseguir
+      introspectar o GeneratorDbContext. PrivateAssets=all — não é preciso
+      em runtime, só durante `dotnet ef migrations add`.
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WeberTech.LicenseGenerator.Entities;
@@ -15,6 +16,7 @@ namespace WeberTech.LicenseGenerator.ViewModels;
 public sealed partial class NavigationShellViewModel : ObservableObject
 {
     private readonly Action _onLogout;
+    private readonly Func<TopLevel?> _topLevelProvider;
 
     public User CurrentUser { get; }
 
@@ -33,10 +35,11 @@ public sealed partial class NavigationShellViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSettingsActive;
 
-    public NavigationShellViewModel(User currentUser, Action onLogout)
+    public NavigationShellViewModel(User currentUser, Action onLogout, Func<TopLevel?> topLevelProvider)
     {
         CurrentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
         _onLogout = onLogout ?? throw new ArgumentNullException(nameof(onLogout));
+        _topLevelProvider = topLevelProvider ?? throw new ArgumentNullException(nameof(topLevelProvider));
 
         NavigateToIssueLicense(); // tela mais usada no dia a dia — abre por padrão
     }
@@ -79,19 +82,19 @@ public sealed partial class NavigationShellViewModel : ObservableObject
     private void Logout() => _onLogout();
 
     /// <summary>
-    /// Passo 1 (Fase 4/M0) já está pronto — colar/interpretar o QR. O
-    /// formulário de emissão de verdade (Passo 2) só chega no M6; por
-    /// agora, confirmar um pedido mostra o que foi interpretado num
-    /// placeholder, para deixar claro que o fluxo termina aí por agora.
+    /// Passo 1 (Fase 4/M0) — colar/interpretar o QR. Ao confirmar um
+    /// pedido, mostra o formulário de emissão completo (M6):
+    /// CustomerPicker (M4) + ProductProfilePicker (M5) + plano/tipo/datas/
+    /// módulos + LicenseIssuer real (Core, Fase 5), gerando um .wta de
+    /// verdade em disco.
     /// </summary>
     private object BuildIssueLicenseFlow()
     {
         var activationViewModel = new ActivationViewModel();
         activationViewModel.RequestConfirmed += (_, request) =>
         {
-            CurrentPageContent = new PlaceholderView(
-                $"Pedido interpretado: {request.ProductId}",
-                $"Machine ID {request.MachineId} — o formulário de emissão (M6) ainda não existe.");
+            var issueViewModel = new IssueLicenseViewModel(request, _topLevelProvider);
+            CurrentPageContent = new IssueLicenseView { DataContext = issueViewModel };
         };
 
         return new ActivationView { DataContext = activationViewModel };

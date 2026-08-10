@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             xmlns:entities="using:WeberTech.LicenseGenerator.Entities"
+             mc:Ignorable="d"
+             d:DesignWidth="420" d:DesignHeight="420"
+             x:Class="WeberTech.LicenseGenerator.Views.CustomerPickerView"
+             x:DataType="vm:CustomerPickerViewModel">
+
+  <Design.DataContext>
+    <vm:CustomerPickerViewModel />
+  </Design.DataContext>
+
+  <StackPanel Spacing="8">
+
+    <TextBlock Classes="label-md" Text="CLIENTE" />
+    <TextBox Text="{Binding SearchText}" Watermark="Pesquisar cliente por nome..." />
+
+    <ListBox ItemsSource="{Binding Results}"
+             SelectedItem="{Binding SelectedCustomer}"
+             MaxHeight="160"
+             Background="Transparent"
+             BorderThickness="0"
+             IsVisible="{Binding IsBrowsing}">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="entities:Customer">
+          <StackPanel Spacing="2" Margin="4">
+            <TextBlock Text="{Binding Name}" />
+            <TextBlock Classes="body-sm"
+                       Text="{Binding TaxId}"
+                       IsVisible="{Binding TaxId, Converter={x:Static ObjectConverters.IsNotNull}}" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsBrowsing}">
+      <Button Classes="tertiary" Content="+ Novo cliente" Command="{Binding ShowAddNewCustomerCommand}" />
+      <Button Classes="tertiary" Content="Editar" Command="{Binding EditSelectedCustomerCommand}" />
+      <Button Classes="tertiary" Content="Desativar" Command="{Binding DeactivateSelectedCustomerCommand}" />
+    </StackPanel>
+
+    <Border Classes="card" IsVisible="{Binding IsEditingCustomer}">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="headline-md" Text="Editar cliente" />
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NOME" />
+          <TextBox Text="{Binding NewCustomerName}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NIF (OPCIONAL)" />
+          <TextBox Text="{Binding NewCustomerTaxId}" />
+        </StackPanel>
+
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Guardar" Command="{Binding ConfirmEditCustomerCommand}" />
+          <Button Classes="secondary" Content="Cancelar" Command="{Binding CancelEditCustomerCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="card" IsVisible="{Binding IsAddingNewCustomer}">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="headline-md" Text="Novo cliente" />
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NOME" />
+          <TextBox Text="{Binding NewCustomerName}" Watermark="ex.: Loja Central Lda" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NIF (OPCIONAL)" />
+          <TextBox Text="{Binding NewCustomerTaxId}" />
+        </StackPanel>
+
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Guardar" Command="{Binding ConfirmAddNewCustomerCommand}" />
+          <Button Classes="secondary" Content="Cancelar" Command="{Binding CancelAddNewCustomerCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <TextBlock Text="{Binding StatusMessage}"
+               Classes="body-sm"
+               TextWrapping="Wrap"
+               IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+    <Border Classes="mono-well" IsVisible="{Binding SelectedCustomer, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TextBlock Classes="body-sm" Text="{Binding SelectedCustomer.Name, StringFormat='Selecionado: {0}'}" />
+    </Border>
+
+  </StackPanel>
+</UserControl>

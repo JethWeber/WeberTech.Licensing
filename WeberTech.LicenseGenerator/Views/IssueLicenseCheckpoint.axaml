@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             xmlns:views="using:WeberTech.LicenseGenerator.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="900" d:DesignHeight="650"
+             x:Class="WeberTech.LicenseGenerator.Views.IssueLicenseCheckpoint"
+             x:DataType="vm:IssueLicenseCheckpointViewModel">
+
+  <Grid Margin="32" RowDefinitions="Auto,Auto,Auto,*">
+
+    <TextBlock Grid.Row="0" Classes="label-md" Text="M4 + M5 — VERIFICAÇÃO: CLIENTES E PRODUTOS" Margin="0,0,0,4" />
+    <TextBlock Grid.Row="1" Classes="headline-md" Text="Pedido interpretado" Margin="0,0,0,4" />
+    <TextBlock Grid.Row="2"
+               Classes="body-sm"
+               Text="{Binding Request.ProductId, StringFormat='Produto do QR: {0}'}"
+               Margin="0,0,0,16" />
+
+    <Grid Grid.Row="3" ColumnDefinitions="420,24,420">
+
+      <Border Grid.Column="0" Classes="card" VerticalAlignment="Top">
+        <StackPanel Spacing="16">
+          <views:CustomerPickerView DataContext="{Binding CustomerPicker}" />
+          <TextBlock Text="{Binding CustomerStatusMessage}"
+                     TextWrapping="Wrap"
+                     Classes="body-sm"
+                     IsVisible="{Binding CustomerStatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="2" Classes="card" VerticalAlignment="Top">
+        <StackPanel Spacing="16">
+          <views:ProductProfilePickerView DataContext="{Binding ProductPicker}" />
+          <TextBlock Text="{Binding ProductStatusMessage}"
+                     TextWrapping="Wrap"
+                     Classes="body-sm"
+                     IsVisible="{Binding ProductStatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
+      </Border>
+
+    </Grid>
+  </Grid>
+</UserControl>

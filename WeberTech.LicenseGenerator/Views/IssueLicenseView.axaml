@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             xmlns:views="using:WeberTech.LicenseGenerator.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="1000" d:DesignHeight="800"
+             x:Class="WeberTech.LicenseGenerator.Views.IssueLicenseView"
+             x:DataType="vm:IssueLicenseViewModel">
+
+  <ScrollViewer>
+    <Grid Margin="32" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+
+      <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+        <TextBlock Classes="headline-lg" Text="Emitir Licença" />
+        <TextBlock Classes="body-sm"
+                   Text="{Binding Request.ProductId, StringFormat='Pedido do QR: {0}'}" />
+      </StackPanel>
+
+      <!-- Cliente + Produto lado a lado (M4/M5, reaproveitados) -->
+      <Grid Grid.Row="1" ColumnDefinitions="420,24,420" Margin="0,0,0,16">
+        <Border Grid.Column="0" Classes="card" VerticalAlignment="Top">
+          <views:CustomerPickerView DataContext="{Binding CustomerPicker}" />
+        </Border>
+        <Border Grid.Column="2" Classes="card" VerticalAlignment="Top">
+          <views:ProductProfilePickerView DataContext="{Binding ProductPicker}" />
+        </Border>
+      </Grid>
+
+      <!-- Configuração da licença -->
+      <Border Grid.Row="2" Classes="card" Margin="0,0,0,16">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="headline-md" Text="Configuração da Licença" />
+
+          <Grid ColumnDefinitions="*,16,*">
+            <StackPanel Grid.Column="0" Spacing="4">
+              <TextBlock Classes="label-md" Text="PLANO" />
+              <ComboBox ItemsSource="{Binding AvailablePlans}"
+                        SelectedItem="{Binding SelectedPlan}"
+                        HorizontalAlignment="Stretch"
+                        PlaceholderText="Escolhe um produto primeiro" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Classes="label-md" Text="TIPO DE LICENÇA" />
+              <ComboBox ItemsSource="{Binding AvailableLicenseTypes}"
+                        SelectedItem="{Binding SelectedLicenseType}"
+                        HorizontalAlignment="Stretch" />
+            </StackPanel>
+          </Grid>
+
+          <Grid ColumnDefinitions="*,16,*">
+            <StackPanel Grid.Column="0" Spacing="4">
+              <TextBlock Classes="label-md" Text="VÁLIDO DE" />
+              <DatePicker SelectedDate="{Binding StartDate}" HorizontalAlignment="Stretch" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Classes="label-md" Text="VÁLIDO ATÉ" />
+              <DatePicker SelectedDate="{Binding EndDate}"
+                          IsEnabled="{Binding !IsPerpetual}"
+                          HorizontalAlignment="Stretch" />
+            </StackPanel>
+          </Grid>
+
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="MÓDULOS" />
+            <ItemsControl ItemsSource="{Binding Features}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:FeatureSelection">
+                  <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,0,16,4" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Chave privada -->
+      <Border Grid.Row="3" Classes="card" Margin="0,0,0,16">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="headline-md" Text="Assinatura" />
+          <TextBlock Classes="body-sm"
+                     Text="A chave privada nunca é gravada nem transmitida por esta app — só é lida do ficheiro para assinar, e descartada logo a seguir." />
+
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="CHAVE PRIVADA (.PEM)" />
+            <Grid ColumnDefinitions="*,8,Auto">
+              <TextBox Grid.Column="0"
+                        Text="{Binding PrivateKeyPath}"
+                        Watermark="Nenhum ficheiro selecionado"
+                        IsReadOnly="True"
+                        FontFamily="{StaticResource MonoFontFamily}" />
+              <Button Grid.Column="2" Classes="secondary" Content="Procurar..." Command="{Binding BrowsePrivateKeyCommand}" />
+            </Grid>
+          </StackPanel>
+
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="PASSWORD (SE A CHAVE ESTIVER CIFRADA)" />
+            <TextBox Text="{Binding PrivateKeyPassword}" PasswordChar="•" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Mensagens + ação final -->
+      <StackPanel Grid.Row="4" Spacing="8" Margin="0,0,0,16">
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <TextBlock Text="{Binding SuccessMessage}"
+                   Classes="body-sm"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding SuccessMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      </StackPanel>
+
+      <Button Grid.Row="5"
+              Classes="accent"
+              Content="Gerar Licença (.wta)"
+              Command="{Binding IssueCommand}"
+              IsEnabled="{Binding !IsBusy}"
+              HorizontalAlignment="Left" />
+
+    </Grid>
+  </ScrollViewer>
+</UserControl>

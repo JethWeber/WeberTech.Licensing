@@ -1,0 +1,122 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             xmlns:entities="using:WeberTech.LicenseGenerator.Entities"
+             mc:Ignorable="d"
+             d:DesignWidth="420" d:DesignHeight="480"
+             x:Class="WeberTech.LicenseGenerator.Views.ProductProfilePickerView"
+             x:DataType="vm:ProductProfilePickerViewModel">
+
+  <Design.DataContext>
+    <vm:ProductProfilePickerViewModel />
+  </Design.DataContext>
+
+  <StackPanel Spacing="8">
+
+    <TextBlock Classes="label-md" Text="PRODUTO" />
+    <TextBox Text="{Binding SearchText}" Watermark="Pesquisar produto..." />
+
+    <ListBox ItemsSource="{Binding Results}"
+             SelectedItem="{Binding SelectedProduct}"
+             MaxHeight="160"
+             Background="Transparent"
+             BorderThickness="0"
+             IsVisible="{Binding IsBrowsing}">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="entities:ProductProfile">
+          <StackPanel Spacing="2" Margin="4">
+            <TextBlock Text="{Binding Name}" />
+            <TextBlock Classes="body-sm" Text="{Binding ProductId}" FontFamily="{StaticResource MonoFontFamily}" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsBrowsing}">
+      <Button Classes="tertiary" Content="+ Novo produto" Command="{Binding ShowAddNewProductCommand}" />
+      <Button Classes="tertiary" Content="Editar" Command="{Binding EditSelectedProductCommand}" />
+      <Button Classes="tertiary" Content="Desativar" Command="{Binding DeactivateSelectedProductCommand}" />
+    </StackPanel>
+
+    <Border Classes="card" IsVisible="{Binding IsEditingProduct}">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="headline-md" Text="Editar produto" />
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NOME" />
+          <TextBox Text="{Binding NewProductName}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="MÓDULOS (SEPARADOS POR VÍRGULA)" />
+          <TextBox Text="{Binding NewProductFeatures}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="PLANOS (SEPARADOS POR VÍRGULA)" />
+          <TextBox Text="{Binding NewProductPlans}" />
+        </StackPanel>
+
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Guardar" Command="{Binding ConfirmEditProductCommand}" />
+          <Button Classes="secondary" Content="Cancelar" Command="{Binding CancelEditProductCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="card" IsVisible="{Binding IsAddingNewProduct}">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="headline-md" Text="Novo produto" />
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="IDENTIFICADOR (PRODUCT ID)" />
+          <TextBox Text="{Binding NewProductId}"
+                    Watermark="ex.: smartgest.desktop_v01"
+                    FontFamily="{StaticResource MonoFontFamily}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NOME" />
+          <TextBox Text="{Binding NewProductName}" Watermark="ex.: SmartGest" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="MÓDULOS (SEPARADOS POR VÍRGULA)" />
+          <TextBox Text="{Binding NewProductFeatures}" Watermark="ex.: Contabilidade, IVA/Impostos, Inventario" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="PLANOS (SEPARADOS POR VÍRGULA)" />
+          <TextBox Text="{Binding NewProductPlans}" Watermark="ex.: Padrão, Profissional, Corporativo" />
+        </StackPanel>
+
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Guardar" Command="{Binding ConfirmAddNewProductCommand}" />
+          <Button Classes="secondary" Content="Cancelar" Command="{Binding CancelAddNewProductCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <TextBlock Text="{Binding StatusMessage}"
+               Classes="body-sm"
+               TextWrapping="Wrap"
+               IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+    <Border Classes="mono-well" IsVisible="{Binding SelectedProduct, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TextBlock Classes="body-sm" Text="{Binding SelectedProduct.Name, StringFormat='Selecionado: {0}'}" />
+    </Border>
+
+  </StackPanel>
+</UserControl>

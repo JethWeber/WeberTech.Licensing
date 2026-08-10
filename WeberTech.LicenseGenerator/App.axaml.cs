@@ -25,11 +25,27 @@ public partial class App : Application
             };
 
             var authService = new AuthService();
+            var productProfileService = new ProductProfileService();
 
             // Verificação local rápida (SQLite) — aceitável bloquear o
             // arranque por isto; nada mais pode ser mostrado antes de saber
             // se existe algum utilizador (decide Login vs. Register).
-            authService.EnsureDatabaseCreatedAsync().GetAwaiter().GetResult();
+            try
+            {
+                authService.EnsureDatabaseCreatedAsync().GetAwaiter().GetResult();
+                productProfileService.EnsureSeedDataAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex) when (DatabaseErrorHelper.IsDatabaseError(ex))
+            {
+                // EnsureCreated() só cria o esquema inteiro na primeira vez
+                // que o ficheiro .db é gerado — não faz update incremental,
+                // nem de tabelas nem de colunas novas. Acontece sempre que um
+                // marco novo (Fase 6) muda o GeneratorDbContext e o
+                // generator.db local já existia de uma sessão anterior.
+                // Esperado durante desenvolvimento ativo (ver README).
+                throw new InvalidOperationException(DatabaseErrorHelper.DescribeError(ex), ex);
+            }
+
             bool hasAnyUser = authService.HasAnyUserAsync().GetAwaiter().GetResult();
 
             void ShowLogin()
@@ -50,7 +66,11 @@ public partial class App : Application
 
             void ShowAuthenticatedArea(User user)
             {
-                var shellViewModel = new NavigationShellViewModel(user, ShowLogin);
+                // mainWindow já É um TopLevel (Window herda de TopLevel) —
+                // passar () => mainWindow é suficiente para o FileDialogService
+                // (usado dentro do formulário de emissão, M6) conseguir abrir
+                // diálogos nativos de ficheiro ancorados nesta janela.
+                var shellViewModel = new NavigationShellViewModel(user, ShowLogin, () => mainWindow);
                 mainWindow.Content = new NavigationShellView { DataContext = shellViewModel };
             }
 

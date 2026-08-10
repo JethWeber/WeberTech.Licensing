@@ -163,62 +163,156 @@ testes usam sempre `FakeWmiQueryService`, por isso correm em qualquer SO.
       `LicenseStoreTests` (save/load, criação de subpastas, ficheiro
       corrompido, carimbo de verificação, caminho padrão).
 
-## Estado atual: Fase 6 redesenhada (mockups do utilizador) — M1 concluído, aguardando validação visual
+## Estado atual: Fase 6 — M1 a M5 concluídos
 
-A Fase 6 foi reformulada a partir de mockups fornecidos (design system
-**Cyber-Shield Enterprise**: navy escuro + azul elétrico, Inter + JetBrains
-Mono). Plano completo em 12 marcos (M0–M11) combinado na conversa — decisão
-de plataforma (M0): **desktop Avalonia**, não web. O trabalho das Fases 1–5
-(Core: Crypto, Machine ID, `.wta`) não muda em nada — só a camada de UI do
-`LicenseGenerator` está a ser refeita.
+**M1/M2/M3/M4:** ✅ (ver histórico)
 
-**M0 — Decisão de plataforma:** ✅ Desktop Avalonia (confirmado).
+**M5 — Cadastro de Produtos:** ✅ implementado, ⏳ aguardando validação.
+- [x] **Decisão registada:** `ProductProfile` vive só no `LicenseGenerator`
+      (não no Core) — o `ILicenseGate` do lado do produto-cliente só
+      precisa de `HasFeature(string)` contra a licença já emitida; a lista
+      de módulos *disponíveis* por produto só importa na hora de emitir.
+- [x] `Entities/ProductProfile.cs` — `ProductId`, `Name`,
+      `AvailableFeatures`/`AvailablePlans` (`List<string>`), `IsActive`
+      (desativar, nunca apagar — licenças já emitidas com um perfil
+      continuam válidas mesmo que ele saia de circulação).
+- [x] `Persistence/GeneratorDbContext.cs` — `DbSet<ProductProfile>`, índice
+      único em `ProductId`. `List<string>` gravado como texto delimitado
+      por `|` via `ValueConverter` + `ValueComparer` (SQLite não tem tipo
+      de coleção nativo — sem o `ValueComparer`, o EF não deteta mudanças
+      *dentro* da lista corretamente).
+- [x] `Services/ProductProfileService.cs` — `ListAsync`, `GetByProductIdAsync`,
+      `CreateAsync`, e `EnsureSeedDataAsync()` (idempotente — só semeia se a
+      tabela estiver vazia) com os **3 produtos da Secção 9 do PDF
+      original**: School Manager (Alunos/Propinas/Financeiro/Relatorios),
+      SmartGest (Contabilidade/IVA-Impostos/Inventario/Relatorios), KiVenda
+      (Caixa/Estoque/Compras/Vendas), todos com planos Padrão/Profissional/
+      Corporativo (só o mockup mostrava esses nomes de plano — o PDF nunca
+      fixou um conjunto canónico, então esta é uma escolha, não um dado
+      "oficial").
+- [x] `ViewModels/ProductProfilePickerViewModel.cs` + `Views/ProductProfilePickerView.axaml`
+      — busca local (poucos produtos, sem round-trip por letra) + "+ Novo
+      produto" inline (identificador, nome, módulos e planos separados por
+      vírgula). **Reutilizável de verdade**, como o `CustomerPickerView` —
+      o M6 herda isto.
+- [x] `IssueLicenseCheckpointViewModel`/`View` — o checkpoint do M4 evoluiu
+      para mostrar os dois pickers lado a lado (cliente + produto), em vez
+      de ser recriado do zero. Arquivos antigos `IssueLicenseM4Checkpoint*`
+      removidos.
+- [x] `App.axaml.cs` — `ProductProfileService.EnsureSeedDataAsync()` chamado
+      no arranque, junto com `AuthService.EnsureDatabaseCreatedAsync()`.
 
-**M1 — Fundação visual (design tokens):** ✅ implementado, ⏳ aguardando
-confirmação visual antes de M2.
-- [x] Fonte **JetBrains Mono** (Regular/Medium/SemiBold/Bold, licença OFL)
-      baixada do repositório oficial e embutida em
-      `Assets/Fonts/JetBrainsMono/*.ttf` — não depende de estar instalada
-      no PC do cliente. Inter já vinha via `Avalonia.Fonts.Inter`
-      (`WithInterFont()`, Program.cs, desde a Fase 1).
-- [x] `Styles/DesignTokens.axaml` — todas as cores do `DESIGN.md` como
-      `Color`/`SolidColorBrush`, tamanhos de tipografia, radius (2/4/6/8px),
-      spacing (unidade base 4px).
-- [x] `Styles/Styles.axaml` — classes reutilizáveis: `TextBlock` (`.display-lg`,
-      `.headline-lg/md`, `.body-lg/sm`, `.label-md`, `.mono-md`), `Border`
-      (`.card`, `.mono-well` para chaves/IDs, `.badge`/`.badge-success`/`.badge-error`),
-      `Button` (`.accent`/`.secondary`/`.tertiary`, com glow simples no hover
-      do `.accent` — `BoxShadow` azul a 30%, ver Secção "Elevação" do
-      `DESIGN.md`), `TextBox` com borda azul no foco.
-- [x] `App.axaml` — `RequestedThemeVariant="Dark"`, tokens mergeados em
-      `Application.Resources`, `Styles.axaml` incluído depois do
-      `FluentTheme` (pra conseguir sobrepor os defaults).
-- [x] `Views/DesignSystemPreview.axaml` — tela de verificação temporária
-      (card + badges + 3 variantes de botão + texto em `mono-md`),
-      atualmente é o que a `MainWindow` mostra. **Não é uma tela final** —
-      só existe para confirmar visualmente antes do M2.
-- [ ] **Ainda por confirmar:** abrir no VS Code (Avalonia Previewer) ou
-      rodar (`F5`) e conferir se cores/fontes batem com os mockups.
+**Adiantado antes do M9 (a pedido, entre M5 e M6) — `UpdateAsync`/`DeactivateAsync`
+em Cliente e Produto:**
+- [x] `Entities/Customer.cs` ganhou `IsActive` (não existia — só o
+      `ProductProfile` tinha, e nem esse estava implementado de facto: o
+      comentário prometia "desativar" mas não havia método nenhum).
+- [x] `CustomerService`/`ProductProfileService` — `UpdateAsync`,
+      `DeactivateAsync` (nunca delete físico — licenças/histórico já
+      ligados continuam intactos), `ReactivateAsync`. `ListAsync` de
+      ambos passa a filtrar só ativos por padrão (`activeOnly = true`).
+      `ProductProfile.UpdateAsync` mantém `ProductId` imutável de
+      propósito — é o valor gravado em licenças já emitidas.
+- [x] `CustomerPickerViewModel`/`ProductProfilePickerViewModel` — botões
+      "Editar"/"Desativar" ao lado de "+ Novo ...", habilitados só com um
+      item selecionado. Painel de edição reaproveita os mesmos campos do
+      painel de criação (evita duplicar estado). Nova propriedade
+      computada `IsBrowsing` esconde lista/botões enquanto qualquer
+      painel (criar ou editar) está aberto.
+- ⚠️ **Isto NÃO é a tela de gestão do M9** — é só o suficiente pra não
+  bloquear teste antes do M6. Sem confirmação modal ao desativar (clica e
+  já desativa); isso fica pro M9, quando existir uma tela dedicada.
 
-⚠️ **Nota de segurança à frente (M9):** o mockup de Configurações mostra uma
-"Chave Mestra" em texto copiável. Isso conflita com a arquitetura RSA
-assimétrica já construída (Secção 4 do roteiro) — a chave privada nunca
-pode aparecer em texto nem ser copiável. Vamos adaptar essa tela para
-mostrar metadados da chave (fingerprint/versão/data), não o valor — já
-sinalizado no plano, ainda não é bloqueante agora.
+⚠️ **Atenção — o mesmo problema do `generator.db` desatualizado vai
+acontecer de novo aqui**, porque `Customer` ganhou uma coluna nova
+(`IsActive`). Se já tinhas corrido a app depois do M5, apaga o
+`generator.db` local mais uma vez antes de testar isto (ver "Solução de
+problemas conhecidos" abaixo).
 
-## Próximo passo: M2 — Autenticação (Login/Register)
+## Solução de problemas conhecidos
 
-1. Entidade `User` (nome, username/email, password hash) — provavelmente em
-   `WeberTech.LicenseGenerator/Persistence/`, junto com o histórico de
-   emissões (SQLite local).
-2. Hashing de password (ex.: `BCrypt.Net` ou `Rfc2898DeriveBytes`/PBKDF2 do
-   BCL, evitar dependência extra se der).
-3. `Views/LoginView.axaml` + `Views/RegisterView.axaml` seguindo o visual
-   já estabelecido no M1 (`.card`, `.accent`, `TextBox` estilizado).
-4. Sessão simples em memória — nenhuma tela pós-login acessível sem
-   autenticação válida.
+**`SqliteException: no such table: X` (ou `no such column: X`) ao correr
+`dotnet run`.** Causa: `EnsureCreated()` (usado no arranque, ver
+`AuthService.EnsureDatabaseCreatedAsync`) só cria o esquema inteiro **na
+primeira vez** que o ficheiro `.db` é gerado — não faz atualização
+incremental, nem de tabelas novas nem de colunas novas em tabelas
+existentes. Se já correste a app numa fase anterior e um marco novo
+adicionou uma entidade (ou só um campo a uma entidade já existente — foi
+o caso do `Customer.IsActive`, entre M5 e M6), o `generator.db` antigo
+continua desatualizado.
 
-Ver plano completo (M0–M11) na conversa — ainda não copiado para o roteiro
-`.md` principal; farei isso quando a Fase 6 estiver mais estável, para não
-reescrever o documento a cada marco.
+**Solução:** apaga o ficheiro local e deixa recriar do zero (só tem dados
+de teste, nunca dados de cliente real):
+- Linux: `rm ~/.local/share/WeberTech/LicenseGenerator/generator.db`
+- Windows: apaga `%LocalAppData%\WeberTech\LicenseGenerator\generator.db`
+
+Isto vai continuar a acontecer a cada marco (ou ajuste dentro de um
+marco) que mexer no `GeneratorDbContext`, enquanto não migrarmos para EF
+Core Migrations formais (decisão consciente — ver nota no M2: esperar o
+esquema estabilizar primeiro, para não gerar uma migration nova a cada
+marco). O erro já vem com uma mensagem clara apontando exatamente este
+ficheiro, em vez de uma stack trace crua do SQLite — mas só cobre "no
+such table"; "no such column" (como neste caso) ainda aparece cru. Se
+isto continuar a incomodar, é sinal de que vale a pena migrar para EF
+Core Migrations de vez (o pacote `Microsoft.EntityFrameworkCore.Design`
+já está referenciado no `.csproj`, preparado para isso).
+
+## Estado atual: Fase 6 — M1 a M5 concluídos · M6 concluído
+
+**M1–M5:** ✅ (ver histórico)
+
+**M6 — Tela "Emitir Licença" (formulário completo):** ✅ implementado,
+⏳ aguardando validação — **primeira emissão de `.wta` real através da UI**.
+
+- [x] `Services/FileDialogService.cs` — diálogos nativos via
+      `IStorageProvider` do Avalonia: `PickPrivateKeyFileAsync` (filtro
+      `*.pem`) e `PickSaveWtaFileAsync` (filtro `*.wta`, nome sugerido a
+      partir de cliente+produto). Recebe o `TopLevel` via delegate — não
+      guarda referência direta a nenhuma janela.
+- [x] `ViewModels/FeatureSelection.cs` — item de checkbox (nome do módulo
+      + selecionado), populado a partir de `ProductProfile.AvailableFeatures`
+      sempre que o produto selecionado muda.
+- [x] `ViewModels/IssueLicenseViewModel.cs` — o formulário de verdade:
+  - Embrulha `CustomerPickerViewModel` (M4) e `ProductProfilePickerViewModel`
+    (M5) sem alterar nenhum dos dois — só escuta `ProductSelected` para
+    reconstruir `AvailablePlans`/`Features` a partir do produto escolhido.
+  - **Decisão consciente, diferente do mockup original:** a busca de
+    produto vem pré-filtrada pelo `productId` decodificado do QR
+    (`ProductPicker.SearchText = request.ProductId`), mas **não trava** a
+    escolha — o mockup trata esse campo como imutável/auto-preenchido; aqui
+    fica como sugestão forte, porque o picker é genérico e reutilizável
+    (travar exigiria um "modo bloqueado" só para este caso).
+  - Validação completa antes de emitir: cliente, produto, plano, data de
+    validade (dispensada se `Perpetual`), caminho da chave privada, pelo
+    menos um módulo marcado.
+  - `IssueAsync` monta a `License` (Core, Fase 5) com os dados reais dos
+    pickers + `Request.MachineId` (do QR, Fase 4), chama
+    `LicenseIssuer.Issue(...)`, pede onde gravar via `FileDialogService`,
+    grava com `LicenseStore.Save` (Core, Fase 5). `KeyLoadException` da
+    chave privada vira `ErrorMessage`, não crash.
+- [x] `Views/IssueLicenseView.axaml` — cliente+produto lado a lado (M4/M5
+      embutidos), depois plano/tipo/datas/módulos, depois chave privada
+      (caminho somente-leitura + "Procurar...", password mascarada), depois
+      mensagem + botão final. `DatePicker.SelectedDate` para as datas;
+      "Válido até" desabilitado quando `IsPerpetual`.
+- [x] `NavigationShellViewModel` — construtor ganhou `Func<TopLevel?>`
+      (vem do `App.axaml.cs`, que passa `() => mainWindow` — `Window`
+      já É um `TopLevel`). "Emitir Licença" agora abre o formulário real
+      em vez do checkpoint.
+- [x] `IssueLicenseCheckpoint*` (M4+M5) removidos — totalmente substituídos.
+
+⚠️ **Nada disto grava histórico ainda** — emitir gera o `.wta` de verdade
+em disco, mas não fica registado em lado nenhum dentro da app (isso é
+exatamente o M7). Se precisares de conferir uma licença emitida, por
+agora só abrindo o ficheiro `.wta` gerado.
+
+## Próximo passo: M7 — Histórico de Licenças
+
+1. Entidade local (`EmissionHistoryEntry` ou similar) no `GeneratorDbContext`
+   — data de emissão, cliente, produto/plano, Machine ID, expiração, status.
+2. `IssueLicenseViewModel.IssueAsync` grava uma entrada aqui logo após
+   `LicenseStore.Save` ter sucesso.
+3. Tabela com filtros por produto/status/data (mockup: `Histórico de
+   Licenças`), substitui o `PlaceholderView` que "Histórico" mostra hoje.
+
+Ver plano completo (M0–M11) na conversa.

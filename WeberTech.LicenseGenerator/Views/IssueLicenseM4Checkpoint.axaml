@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             xmlns:views="using:WeberTech.LicenseGenerator.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="700" d:DesignHeight="600"
+             x:Class="WeberTech.LicenseGenerator.Views.IssueLicenseM4Checkpoint"
+             x:DataType="vm:IssueLicenseM4CheckpointViewModel">
+
+  <Grid Margin="32" RowDefinitions="Auto,Auto,Auto,Auto">
+
+    <TextBlock Grid.Row="0" Classes="label-md" Text="M4 — VERIFICAÇÃO: CADASTRO DE CLIENTES" Margin="0,0,0,4" />
+    <TextBlock Grid.Row="1" Classes="headline-md" Text="Pedido interpretado" Margin="0,0,0,4" />
+    <TextBlock Grid.Row="2"
+               Classes="body-sm"
+               Text="{Binding Request.ProductId, StringFormat='Produto: {0}'}"
+               Margin="0,0,0,16" />
+
+    <Border Grid.Row="3" Classes="card" MaxWidth="420" HorizontalAlignment="Left">
+      <StackPanel Spacing="16">
+        <views:CustomerPickerView DataContext="{Binding CustomerPicker}" />
+        <TextBlock Text="{Binding StatusMessage}"
+                   TextWrapping="Wrap"
+                   Classes="body-sm"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      </StackPanel>
+    </Border>
+
+  </Grid>
+</UserControl>

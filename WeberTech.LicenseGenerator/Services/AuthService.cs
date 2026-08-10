@@ -30,7 +30,12 @@ public sealed class AuthService
     /// <summary>
     /// Chamar uma vez no arranque da app. Usa <c>EnsureCreated</c> em vez de
     /// migrations formais por agora (Fase 6 ainda em desenvolvimento ativo;
-    /// migrations entram quando o esquema estabilizar — ver TODO no roteiro).
+    /// migrations entram quando o esquema estabilizar). Nota: como
+    /// EnsureCreated() só cria o esquema inteiro na primeira vez que o
+    /// ficheiro não existe (não faz update incremental), sempre que um
+    /// marco novo adiciona uma entidade ao <see cref="GeneratorDbContext"/>,
+    /// é preciso apagar o <c>generator.db</c> local para recriar do zero
+    /// (ver README, "Solução de problemas conhecidos").
     /// </summary>
     public async Task EnsureDatabaseCreatedAsync()
     {
@@ -60,7 +65,16 @@ public sealed class AuthService
 
         await using GeneratorDbContext db = _dbContextFactory();
 
-        bool exists = await db.Users.AnyAsync(u => u.Username == username);
+        bool exists;
+        try
+        {
+            exists = await db.Users.AnyAsync(u => u.Username == username);
+        }
+        catch (Exception ex) when (DatabaseErrorHelper.IsDatabaseError(ex))
+        {
+            return AuthResult.Fail(DatabaseErrorHelper.DescribeError(ex));
+        }
+
         if (exists)
             return AuthResult.Fail("Já existe um utilizador com este nome.");
 
@@ -72,7 +86,15 @@ public sealed class AuthService
         };
 
         db.Users.Add(user);
-        await db.SaveChangesAsync();
+
+        try
+        {
+            await db.SaveChangesAsync();
+        }
+        catch (Exception ex) when (DatabaseErrorHelper.IsDatabaseError(ex))
+        {
+            return AuthResult.Fail(DatabaseErrorHelper.DescribeError(ex));
+        }
 
         return AuthResult.Ok(user);
     }
@@ -83,7 +105,16 @@ public sealed class AuthService
         password ??= string.Empty;
 
         await using GeneratorDbContext db = _dbContextFactory();
-        User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+        User? user;
+        try
+        {
+            user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+        catch (Exception ex) when (DatabaseErrorHelper.IsDatabaseError(ex))
+        {
+            return AuthResult.Fail(DatabaseErrorHelper.DescribeError(ex));
+        }
 
         // Mensagem genérica de propósito — não distinguir "utilizador não
         // existe" de "password errada" (mesmo princípio da
@@ -92,7 +123,15 @@ public sealed class AuthService
             return AuthResult.Fail("Utilizador ou password incorretos.");
 
         user.LastLoginAt = DateTime.UtcNow;
-        await db.SaveChangesAsync();
+
+        try
+        {
+            await db.SaveChangesAsync();
+        }
+        catch (Exception ex) when (DatabaseErrorHelper.IsDatabaseError(ex))
+        {
+            return AuthResult.Fail(DatabaseErrorHelper.DescribeError(ex));
+        }
 
         return AuthResult.Ok(user);
     }
