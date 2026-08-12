@@ -36,6 +36,23 @@ public sealed class FileDialogService
         return files.Count > 0 ? files[0].Path.LocalPath : null;
     }
 
+    /// <summary>Devolve o caminho local da imagem escolhida, ou <c>null</c> se o utilizador cancelou.</summary>
+    public async Task<string?> PickQrImageFileAsync()
+    {
+        TopLevel? topLevel = _topLevelProvider();
+        if (topLevel?.StorageProvider is not { } storageProvider)
+            return null;
+
+        IReadOnlyList<IStorageFile> files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Selecionar imagem com o QR Code",
+            AllowMultiple = false,
+            FileTypeFilter = [new FilePickerFileType("Imagens") { Patterns = ["*.png", "*.jpg", "*.jpeg", "*.bmp", "*.webp"] }]
+        });
+
+        return files.Count > 0 ? files[0].Path.LocalPath : null;
+    }
+
     /// <summary>Devolve o caminho local onde gravar, ou <c>null</c> se o utilizador cancelou.</summary>
     public async Task<string?> PickSaveWtaFileAsync(string suggestedFileName)
     {
