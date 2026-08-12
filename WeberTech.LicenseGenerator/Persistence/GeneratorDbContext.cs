@@ -21,6 +21,7 @@ public sealed class GeneratorDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<ProductProfile> ProductProfiles => Set<ProductProfile>();
+    public DbSet<EmissionHistoryEntry> EmissionHistory => Set<EmissionHistoryEntry>();
 
     public GeneratorDbContext() : this(GetDefaultConnectionString()) { }
 
@@ -71,6 +72,12 @@ public sealed class GeneratorDbContext : DbContext
             entity.Property(p => p.AvailablePlans)
                 .HasConversion(stringListConverter)
                 .Metadata.SetValueComparer(stringListComparer);
+        });
+
+        modelBuilder.Entity<EmissionHistoryEntry>(entity =>
+        {
+            entity.HasIndex(e => e.IssuedAt);
+            entity.HasIndex(e => e.ProductId);
         });
     }
 
