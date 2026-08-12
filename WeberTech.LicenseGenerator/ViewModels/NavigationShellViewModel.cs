@@ -48,9 +48,7 @@ public sealed partial class NavigationShellViewModel : ObservableObject
     private void NavigateToDashboard()
     {
         SetActive(dashboard: true);
-        CurrentPageContent = new PlaceholderView(
-            "Dashboard",
-            "Chega no M8 — métricas calculadas a partir do histórico real (M7), nada mockado aqui.");
+        CurrentPageContent = new DashboardView { DataContext = new DashboardViewModel() };
     }
 
     [RelayCommand]
@@ -64,18 +62,14 @@ public sealed partial class NavigationShellViewModel : ObservableObject
     private void NavigateToHistory()
     {
         SetActive(history: true);
-        CurrentPageContent = new PlaceholderView(
-            "Histórico de Licenças",
-            "Chega no M7 — toda licença emitida no M6 aparece aqui automaticamente.");
+        CurrentPageContent = new HistoryView { DataContext = new HistoryViewModel() };
     }
 
     [RelayCommand]
     private void NavigateToSettings()
     {
         SetActive(settings: true);
-        CurrentPageContent = new PlaceholderView(
-            "Configurações",
-            "Chega no M9 — segurança/produtos. A chave privada nunca vai aparecer em texto aqui, só metadados.");
+        CurrentPageContent = new SettingsView { DataContext = new SettingsViewModel() };
     }
 
     [RelayCommand]
@@ -90,7 +84,7 @@ public sealed partial class NavigationShellViewModel : ObservableObject
     /// </summary>
     private object BuildIssueLicenseFlow()
     {
-        var activationViewModel = new ActivationViewModel();
+        var activationViewModel = new ActivationViewModel(_topLevelProvider);
         activationViewModel.RequestConfirmed += (_, request) =>
         {
             var issueViewModel = new IssueLicenseViewModel(request, _topLevelProvider);

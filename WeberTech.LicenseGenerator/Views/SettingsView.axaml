@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             xmlns:views="using:WeberTech.LicenseGenerator.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="WeberTech.LicenseGenerator.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+  <Design.DataContext>
+    <vm:SettingsViewModel />
+  </Design.DataContext>
+
+  <ScrollViewer>
+    <Grid Margin="32" RowDefinitions="Auto,Auto">
+
+      <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+        <TextBlock Classes="headline-lg" Text="Configurações" />
+        <TextBlock Classes="body-sm" Text="Segurança e perfis de produto." />
+      </StackPanel>
+
+      <Grid Grid.Row="1" ColumnDefinitions="360,24,*">
+        <Border Grid.Column="0" Classes="card" VerticalAlignment="Top">
+          <views:SecurityInfoView DataContext="{Binding Security}" />
+        </Border>
+
+        <Border Grid.Column="2" Classes="card" VerticalAlignment="Top">
+          <views:ProductProfileSettingsView DataContext="{Binding Products}" />
+        </Border>
+      </Grid>
+
+    </Grid>
+  </ScrollViewer>
+</UserControl>

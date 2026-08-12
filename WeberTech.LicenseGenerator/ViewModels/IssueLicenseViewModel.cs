@@ -27,6 +27,7 @@ public sealed partial class IssueLicenseViewModel : ObservableObject
     private readonly KeyProvider _keyProvider;
     private readonly LicenseStore _licenseStore;
     private readonly FileDialogService _fileDialogService;
+    private readonly EmissionHistoryService _historyService;
 
     public ActivationRequest Request { get; }
 
@@ -81,7 +82,8 @@ public sealed partial class IssueLicenseViewModel : ObservableObject
             new LicenseIssuer(new SignatureService()),
             new KeyProvider(),
             new LicenseStore(),
-            new FileDialogService(topLevelProvider))
+            new FileDialogService(topLevelProvider),
+            new EmissionHistoryService())
     {
     }
 
@@ -90,13 +92,15 @@ public sealed partial class IssueLicenseViewModel : ObservableObject
         LicenseIssuer licenseIssuer,
         KeyProvider keyProvider,
         LicenseStore licenseStore,
-        FileDialogService fileDialogService)
+        FileDialogService fileDialogService,
+        EmissionHistoryService historyService)
     {
         Request = request ?? throw new ArgumentNullException(nameof(request));
         _licenseIssuer = licenseIssuer ?? throw new ArgumentNullException(nameof(licenseIssuer));
         _keyProvider = keyProvider ?? throw new ArgumentNullException(nameof(keyProvider));
         _licenseStore = licenseStore ?? throw new ArgumentNullException(nameof(licenseStore));
         _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
+        _historyService = historyService ?? throw new ArgumentNullException(nameof(historyService));
 
         CustomerPicker = new CustomerPickerViewModel();
         ProductPicker = new ProductProfilePickerViewModel();
@@ -214,6 +218,20 @@ public sealed partial class IssueLicenseViewModel : ObservableObject
                     return; // utilizador cancelou o diálogo de gravar — não é erro
 
                 _licenseStore.Save(envelope, savePath);
+
+                await _historyService.RecordAsync(new EmissionHistoryEntry
+                {
+                    LicenseId = license.LicenseId,
+                    ProductId = license.ProductId,
+                    ProductName = ProductPicker.SelectedProduct.Name,
+                    CustomerName = CustomerPicker.SelectedCustomer.Name,
+                    Plan = license.Plan,
+                    LicenseType = license.Type.ToString(),
+                    MachineId = license.MachineId,
+                    IssuedAt = license.IssuedAt,
+                    ExpiresAt = license.ExpiresAt,
+                    FilePath = savePath
+                });
 
                 SuccessMessage = $"Licença emitida com sucesso: {savePath}";
             }

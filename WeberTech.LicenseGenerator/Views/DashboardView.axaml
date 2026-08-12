@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="WeberTech.LicenseGenerator.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+  <ScrollViewer>
+    <Grid Margin="32" RowDefinitions="Auto,Auto,Auto,Auto">
+
+      <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+        <StackPanel Grid.Column="0" Spacing="4">
+          <TextBlock Classes="headline-lg" Text="Visão Geral do Sistema" />
+          <TextBlock Classes="body-sm" Text="Calculado a partir do histórico local de emissões — sem dados de exemplo." />
+        </StackPanel>
+        <Button Grid.Column="1" Classes="secondary" Content="Atualizar" Command="{Binding RefreshCommand}" VerticalAlignment="Top" />
+      </Grid>
+
+      <TextBlock Grid.Row="1"
+                 Text="{Binding ErrorMessage}"
+                 Foreground="{StaticResource ErrorBrush}"
+                 TextWrapping="Wrap"
+                 Margin="0,0,0,16"
+                 IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <!-- KPIs -->
+      <Grid Grid.Row="2" ColumnDefinitions="*,16,*,16,*,16,*" Margin="0,0,0,16">
+        <Border Grid.Column="0" Classes="card">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="TOTAL DE LICENÇAS" />
+            <TextBlock Classes="headline-lg" Text="{Binding TotalLicenses}" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" Classes="card">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="LICENÇAS ATIVAS" />
+            <TextBlock Classes="headline-lg" Text="{Binding ActiveLicenses}" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="4" Classes="card">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="EXPIRANDO EM BREVE" />
+            <TextBlock Classes="headline-lg" Text="{Binding ExpiringSoon}" Foreground="{StaticResource ErrorBrush}" />
+            <TextBlock Classes="body-sm" Text="Próximos 30 dias" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="6" Classes="card">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="label-md" Text="CLIENTES DISTINTOS" />
+            <TextBlock Classes="headline-lg" Text="{Binding DistinctCustomers}" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <!-- Gráfico + Atividade Recente -->
+      <Grid Grid.Row="3" ColumnDefinitions="*,24,320">
+
+        <Border Grid.Column="0" Classes="card">
+          <StackPanel Spacing="16">
+            <StackPanel Spacing="2">
+              <TextBlock Classes="headline-md" Text="Emissão de Licenças" />
+              <TextBlock Classes="body-sm" Text="Últimos 6 meses" />
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{Binding MonthlyEmissions}" Height="220">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <UniformGrid Rows="1" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:MonthlyEmissionPoint">
+                  <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Spacing="8">
+                    <TextBlock Classes="label-md" Text="{Binding Count}" HorizontalAlignment="Center" />
+                    <Border Width="32"
+                            Height="{Binding BarHeight}"
+                            Background="{StaticResource PrimaryContainerBrush}"
+                            CornerRadius="4,4,0,0" />
+                    <TextBlock Classes="body-sm" Text="{Binding MonthLabel}" HorizontalAlignment="Center" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" Classes="card">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="headline-md" Text="Atividade Recente" />
+
+            <ItemsControl ItemsSource="{Binding RecentActivity}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:HistoryRow">
+                  <StackPanel Spacing="2" Margin="0,0,0,12">
+                    <TextBlock Text="{Binding Entry.CustomerName}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Classes="body-sm" Text="{Binding ProductPlanLabel}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Classes="body-sm" Text="{Binding IssuedAtLabel}" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Classes="body-sm"
+                       TextWrapping="Wrap"
+                       Text="Ainda sem atividade — emite a primeira licença em &quot;Emitir Licença&quot;."
+                       IsVisible="{Binding HasNoData}" />
+          </StackPanel>
+        </Border>
+
+      </Grid>
+    </Grid>
+  </ScrollViewer>
+</UserControl>

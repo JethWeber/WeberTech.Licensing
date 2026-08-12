@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="360" d:DesignHeight="480"
+             x:Class="WeberTech.LicenseGenerator.Views.SecurityInfoView"
+             x:DataType="vm:SecurityInfoViewModel">
+
+  <Design.DataContext>
+    <vm:SecurityInfoViewModel />
+  </Design.DataContext>
+
+  <StackPanel Spacing="12">
+    <TextBlock Classes="headline-md" Text="Segurança" />
+
+    <TextBlock Classes="body-sm"
+               TextWrapping="Wrap"
+               Text="A chave privada nunca é guardada nesta aplicação — é fornecida a cada emissão de licença através do formulário (Emitir Licença), e descartada logo a seguir. Aqui só aparecem metadados da chave pública embutida." />
+
+    <StackPanel Spacing="4">
+      <TextBlock Classes="label-md" Text="ALGORITMO" />
+      <Border Classes="mono-well">
+        <TextBlock Classes="mono-md" Text="{Binding Algorithm}" />
+      </Border>
+    </StackPanel>
+
+    <StackPanel Spacing="4">
+      <TextBlock Classes="label-md" Text="TAMANHO DA CHAVE" />
+      <TextBlock Text="{Binding KeySizeBits, StringFormat='{}{0} bits'}" />
+    </StackPanel>
+
+    <StackPanel Spacing="4">
+      <TextBlock Classes="label-md" Text="FINGERPRINT DA CHAVE PÚBLICA (SHA-256)" />
+      <Border Classes="mono-well">
+        <TextBlock Classes="mono-md" Text="{Binding PublicKeyFingerprint}" TextWrapping="Wrap" />
+      </Border>
+    </StackPanel>
+
+    <TextBlock Text="{Binding ErrorMessage}"
+               Foreground="{StaticResource ErrorBrush}"
+               TextWrapping="Wrap"
+               IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+    <TextBlock Classes="body-sm"
+               TextWrapping="Wrap"
+               Foreground="{StaticResource ErrorBrush}"
+               Text="⚠️ Esta é a chave de DESENVOLVIMENTO gerada na Fase 2 — substituir pela chave real da Weber Tech antes de qualquer emissão de licença de produção." />
+  </StackPanel>
+</UserControl>

@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="600" d:DesignHeight="600"
+             x:Class="WeberTech.LicenseGenerator.Views.ProductProfileSettingsView"
+             x:DataType="vm:ProductProfileSettingsViewModel">
+
+  <Design.DataContext>
+    <vm:ProductProfileSettingsViewModel />
+  </Design.DataContext>
+
+  <StackPanel Spacing="12">
+
+    <Grid ColumnDefinitions="*,Auto,Auto">
+      <TextBlock Grid.Column="0" Classes="headline-md" Text="Perfis de Produto" VerticalAlignment="Center" />
+      <CheckBox Grid.Column="1" Content="Mostrar inativos" IsChecked="{Binding ShowInactive}" Margin="0,0,12,0" />
+      <Button Grid.Column="2" Classes="accent" Content="+ Novo Perfil" Command="{Binding ShowAddNewCommand}" IsVisible="{Binding !IsFormOpen}" />
+    </Grid>
+
+    <TextBlock Text="{Binding StatusMessage}"
+               Classes="body-sm"
+               TextWrapping="Wrap"
+               IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+    <TextBlock Text="{Binding ErrorMessage}"
+               Foreground="{StaticResource ErrorBrush}"
+               TextWrapping="Wrap"
+               IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+    <!-- Formulário (criar/editar) -->
+    <Border Classes="card" IsVisible="{Binding IsFormOpen}">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="headline-md" Text="Novo Perfil de Produto" IsVisible="{Binding IsAdding}" />
+        <TextBlock Classes="headline-md" Text="Editar Perfil de Produto" IsVisible="{Binding IsEditing}" />
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="IDENTIFICADOR (PRODUCT ID)" />
+          <TextBox Text="{Binding FormProductId}"
+                    IsReadOnly="{Binding IsEditing}"
+                    Watermark="ex.: smartgest.desktop_v01"
+                    FontFamily="{StaticResource MonoFontFamily}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="NOME" />
+          <TextBox Text="{Binding FormName}" Watermark="ex.: SmartGest" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="MÓDULOS (SEPARADOS POR VÍRGULA)" />
+          <TextBox Text="{Binding FormFeatures}" Watermark="ex.: Contabilidade, IVA/Impostos, Inventario" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label-md" Text="PLANOS (SEPARADOS POR VÍRGULA)" />
+          <TextBox Text="{Binding FormPlans}" Watermark="ex.: Padrão, Profissional, Corporativo" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Guardar" Command="{Binding ConfirmFormCommand}" />
+          <Button Classes="secondary" Content="Cancelar" Command="{Binding CancelFormCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <!-- Lista -->
+    <ItemsControl ItemsSource="{Binding Rows}" IsVisible="{Binding !IsFormOpen}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="vm:ProductProfileRow">
+          <Border BorderBrush="{StaticResource OutlineVariantBrush}" BorderThickness="0,0,0,1" Padding="0,10">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+              <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,12,0">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBlock Text="{Binding Profile.Name}" FontWeight="SemiBold" />
+                  <Border Classes="badge" Background="{Binding StatusBackgroundBrush}" BorderBrush="{Binding StatusForegroundBrush}">
+                    <TextBlock Classes="label-md" Text="{Binding StatusLabel}" Foreground="{Binding StatusForegroundBrush}" />
+                  </Border>
+                </StackPanel>
+                <TextBlock Classes="body-sm" Text="{Binding Profile.ProductId}" FontFamily="{StaticResource MonoFontFamily}" />
+                <TextBlock Classes="body-sm" Text="{Binding FeaturesLabel}" TextWrapping="Wrap" />
+              </StackPanel>
+
+              <Button Grid.Column="1" Classes="tertiary" Content="Editar" Command="{Binding EditCommand}" VerticalAlignment="Top" />
+              <Button Grid.Column="2" Classes="tertiary" Content="Desativar" Command="{Binding DeactivateCommand}" IsVisible="{Binding Profile.IsActive}" VerticalAlignment="Top" />
+              <Button Grid.Column="3" Classes="tertiary" Content="Reativar" Command="{Binding ReactivateCommand}" IsVisible="{Binding !Profile.IsActive}" VerticalAlignment="Top" />
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+  </StackPanel>
+</UserControl>

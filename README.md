@@ -306,13 +306,176 @@ em disco, mas não fica registado em lado nenhum dentro da app (isso é
 exatamente o M7). Se precisares de conferir uma licença emitida, por
 agora só abrindo o ficheiro `.wta` gerado.
 
-## Próximo passo: M7 — Histórico de Licenças
+## Estado atual: Fase 6 — M1 a M6 concluídos · M7 concluído
 
-1. Entidade local (`EmissionHistoryEntry` ou similar) no `GeneratorDbContext`
-   — data de emissão, cliente, produto/plano, Machine ID, expiração, status.
-2. `IssueLicenseViewModel.IssueAsync` grava uma entrada aqui logo após
-   `LicenseStore.Save` ter sucesso.
-3. Tabela com filtros por produto/status/data (mockup: `Histórico de
-   Licenças`), substitui o `PlaceholderView` que "Histórico" mostra hoje.
+**M1–M6:** ✅ (ver histórico)
+
+**M7 — Histórico de Licenças:** ✅ implementado, ⏳ aguardando validação.
+
+- [x] `Entities/EmissionHistoryEntry.cs` — campos denormalizados de
+      propósito (`ProductName`, `CustomerName`, `Plan` copiados no momento
+      da emissão, não referências): uma entrada de histórico é uma
+      fotografia — não muda se o cliente/produto forem editados depois no
+      M4/M5. Guarda também `FilePath` (onde o `.wta` foi gravado, útil em
+      suporte) e `LicenseId` (cruza com o `.wta` se precisar).
+- [x] `GeneratorDbContext` — `DbSet<EmissionHistoryEntry>`, índices em
+      `IssuedAt` e `ProductId` (não únicos, só performance de busca/ordenação).
+- [x] `Services/EmissionHistoryService.cs` — `RecordAsync` **nunca lança**:
+      se o registo do histórico falhar (ex.: esquema desatualizado), a
+      emissão do `.wta` já teve sucesso antes disso e não deve ser
+      escondida do utilizador por causa de um problema só no histórico —
+      a falha vai só para o log de debug. `ListAsync` busca por
+      cliente/Machine ID, até 200 resultados, mais recente primeiro.
+- [x] `IssueLicenseViewModel.IssueAsync` — depois de `LicenseStore.Save`
+      ter sucesso, chama `EmissionHistoryService.RecordAsync` com os dados
+      reais da emissão (incluindo o caminho onde o `.wta` foi salvo).
+- [x] `ViewModels/HistoryRow.cs` — linha de apresentação com
+      `StatusLabel`/`StatusBackgroundBrush`/`StatusForegroundBrush`
+      calculados a partir de `ExpiresAt` (Ativa/Expira em breve ≤30
+      dias/Expirada/Perpétua). Cores diretas via `IBrush`, não `Classes`
+      dinâmica em XAML — mesmo padrão já usado no `ScoolManager.Desktop`
+      antigo para casos assim, mais simples de revisar sem Previewer.
+- [x] `ViewModels/HistoryViewModel.cs` + `Views/HistoryView.axaml` —
+      busca (cliente/Machine ID) + botão "Atualizar". Tabela via `Grid`
+      replicado (cabeçalho + `ItemsControl`), sem depender do pacote
+      `Avalonia.Controls.DataGrid` (evita dependência nova só para isto).
+      Mensagem "ainda não há nenhuma licença emitida" quando vazio, em vez
+      de tabela em branco sem explicação.
+- [x] `NavigationShellViewModel.NavigateToHistory` — "Histórico" na
+      sidebar agora abre isto, não o `PlaceholderView`.
+
+⚠️ **Simplificação deliberada, diferente do mockup original:** ainda não
+tem filtro por Produto nem por Status (o mockup mostra os dois dropdowns).
+Busca por texto + ordenação por data já cobre o essencial do "pronto
+quando" deste marco — filtros adicionais entram numa iteração seguinte,
+se fizerem falta.
+
+## Leitura de QR por imagem (fora dos marcos, pendência antiga do M0)
+
+Implementado a pedido — ficou marcado como "ainda não implementado" desde o
+Passo 1 (M0) e nunca foi resolvido nos marcos seguintes.
+
+- [x] `Services/QrImageDecoderService.cs` — `DecodeFromFile(imagePath)`
+      via `ZXing.SkiaSharp.BarcodeReader` (API confirmada por pesquisa —
+      `reader.Decode(skBitmap)`), filtrado só para `BarcodeFormat.QR_CODE`
+      com `TryHarder = true` (mais tolerante a fotos tiradas em ângulo/
+      má iluminação, ao custo de ser um pouco mais lento).
+- [x] `FileDialogService.PickQrImageFileAsync()` — diálogo nativo
+      filtrado por `.png/.jpg/.jpeg/.bmp/.webp`.
+- [x] `ActivationViewModel` — novo botão "Carregar imagem do QR...":
+      escolhe o ficheiro → decodifica → preenche `QrText` → já chama
+      `ParseQrText()` sozinho (poupa um clique). `IsDecodingImage` disponível
+      para desabilitar o botão durante a decodificação (`TryHarder` pode
+      demorar um pouco em imagens grandes).
+- [x] `NavigationShellViewModel` — passa o `TopLevel` (mesmo delegate já
+      usado pelo `IssueLicenseViewModel`) para a `ActivationViewModel`
+      também precisar dele agora.
+
+⚠️ **Ainda não é leitura de webcam ao vivo** — só carregar uma imagem já
+existente (foto, screenshot). Webcam em tempo real exigiria acesso a
+câmara nativo multiplataforma, escopo bem maior; o `ZXing.Net.Bindings.SkiaSharp`
+package já referenciado cobriria a decodificação de qualquer forma, só
+faltaria a captura de vídeo em si — fica para se/quando fizer falta de
+verdade.
+
+## Estado atual: Fase 6 — M1 a M7 concluídos (+ leitura de QR por imagem) · M8 concluído
+
+**M1–M7 + leitura de QR por imagem:** ✅ (ver histórico)
+
+**M8 — Dashboard:** ✅ implementado, ⏳ aguardando validação.
+
+- [x] `ViewModels/MonthlyEmissionPoint.cs` — ponto do gráfico (mês, contagem,
+      altura da barra já pré-calculada em pixels — evita `IValueConverter`
+      no XAML só para isso).
+- [x] `ViewModels/DashboardViewModel.cs` — **tudo calculado do
+      `EmissionHistoryService` real (M7)**:
+  - `TotalLicenses` — contagem total.
+  - `ActiveLicenses` — `ExpiresAt` nulo (perpétua) ou no futuro.
+  - `ExpiringSoon` — `ExpiresAt` dentro dos próximos 30 dias.
+  - `DistinctCustomers` — nomes de cliente distintos no histórico.
+  - `MonthlyEmissions` — últimos 6 meses, contando `IssuedAt` (convertido
+    para hora local antes de agrupar) por mês.
+  - `RecentActivity` — as 5 emissões mais recentes, reaproveitando
+    `HistoryRow` (M7) em vez de duplicar formatação.
+- [x] **Decisão consciente, diferente do mockup:** o KPI "Receita
+      Estimada" foi trocado por "Clientes Distintos". Nem `ProductProfile`
+      (M5, só nomes de plano) nem `License` (Core, Fase 5) guardam preço —
+      inventar um valor de receita seria exatamente o tipo de dado
+      mockado que a Fase 6 vem evitando desde o M3.
+- [x] `Views/DashboardView.axaml` — 4 cartões de KPI, gráfico de barras
+      (via `ItemsControl`+`UniformGrid`, sem depender de biblioteca de
+      gráficos — `StackPanel` com `VerticalAlignment="Bottom"` dentro de
+      uma altura fixa faz as labels alinharem na base independente da
+      altura de cada barra), e "Atividade Recente" ao lado.
+- [x] `NavigationShellViewModel.NavigateToDashboard` — "Dashboard" na
+      sidebar agora abre isto, não o `PlaceholderView`. Cada navegação
+      recria o ViewModel do zero (mesmo padrão já usado no Histórico),
+      então os números vêm sempre atualizados sem precisar de "Atualizar"
+      manual — o botão existe só para forçar sem sair/voltar à página.
+
+⚠️ **Com pouco histórico de teste, o gráfico vai parecer "vazio" na
+maioria dos meses** — isso é o comportamento certo (dado real, não
+mockado), só vai ficar visualmente interessante depois de mais emissões
+de teste (ou reais) ao longo do tempo.
+
+## Estado atual: Fase 6 — M1 a M8 concluídos (+ leitura de QR por imagem) · M9 concluído
+
+**M1–M8 + leitura de QR por imagem:** ✅ (ver histórico)
+
+**M9 — Configurações · Segurança + Perfis de Produto:** ✅ implementado,
+⏳ aguardando validação. **Último marco de conteúdo da Fase 6.**
+
+**Bloco 1 — Segurança:**
+- [x] `ViewModels/SecurityInfoViewModel.cs` — carrega a chave pública
+      embutida via `KeyProvider.LoadPublicKey()` (Core) e expõe só
+      metadados: algoritmo (`SignatureService.AlgorithmIdentifier`),
+      tamanho em bits, e fingerprint SHA-256 da `SubjectPublicKeyInfo`
+      (formato `AA:BB:CC:...`, como um fingerprint de certificado).
+      **Nunca a chave privada** — ela nem existe guardada nesta app (é
+      lida do ficheiro escolhido a cada emissão, no M6, e descartada
+      logo a seguir).
+- [x] `Views/SecurityInfoView.axaml` — inclui aviso visível de que esta é
+      a chave de **desenvolvimento** (Fase 2), não a real da Weber Tech.
+
+**Bloco 2 — Perfis de Produto:**
+- [x] `ViewModels/ProductProfileRow.cs` — linha com comandos próprios
+      (`Edit`/`Deactivate`/`Reactivate`) que delegam para o ViewModel pai
+      via callback recebido no construtor — evita *ancestor binding*
+      complicado dentro do `ItemsControl` (mesmo raciocínio que já tinha
+      levado o `HistoryRow`, M7/M8, a calcular cores diretamente em vez
+      de `Classes` dinâmicas).
+- [x] `ViewModels/ProductProfileSettingsViewModel.cs` — gestão completa:
+      listar (com toggle "Mostrar inativos"), criar, editar, desativar,
+      **reativar** (`ReactivateAsync` já existia desde antes do M6, mas
+      esta é a primeira vez que aparece em alguma UI). `ProductId`
+      continua imutável na edição (só leitura no formulário).
+- [x] `Views/ProductProfileSettingsView.axaml` — lista com badge
+      ATIVO/INATIVO, formulário de criar/editar reaproveitando os mesmos
+      campos (padrão já usado em `CustomerPickerViewModel`/
+      `ProductProfilePickerViewModel`, M4/M5).
+
+**Composição:**
+- [x] `ViewModels/SettingsViewModel.cs` — classe simples que só compõe
+      `Security` + `Products` (nenhuma lógica própria).
+- [x] `Views/SettingsView.axaml` — embute `SecurityInfoView` +
+      `ProductProfileSettingsView` lado a lado via `DataContext="{Binding ...}"`
+      — mesmo padrão comprovado desde o M6 (`CustomerPickerView`/
+      `ProductProfilePickerView` dentro de `IssueLicenseView`), evitando
+      o padrão arriscado de trocar `x:DataType` numa `StackPanel` solta
+      sem ser dentro de uma `UserControl` própria.
+- [x] `NavigationShellViewModel.NavigateToSettings` — "Configurações" na
+      sidebar agora abre isto, não o `PlaceholderView`. Era a última
+      opção da sidebar ainda mostrando placeholder — a partir de agora,
+      **todos os 4 itens de navegação têm conteúdo real**.
+
+## 🎉 Fase 6 — todo o conteúdo dos marcos M1–M9 está implementado
+
+Falta formalmente:
+- **M10** — revisão de segurança (conferir o checklist da Secção 9 do
+  roteiro original continua válido com as telas novas) + testes
+  automatizáveis do que for isolável de UI.
+- **M11** — fechamento formal: confirmar que login/register + as 4
+  páginas navegáveis + cadastro de produto/cliente via UI + emissão real
+  de um `.wta` ponta a ponta funcionam juntos, sem regressão.
 
 Ver plano completo (M0–M11) na conversa.

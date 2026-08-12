@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WeberTech.LicenseGenerator.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="WeberTech.LicenseGenerator.Views.HistoryView"
+             x:DataType="vm:HistoryViewModel">
+
+  <Grid Margin="32" RowDefinitions="Auto,Auto,Auto,*">
+
+    <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+      <TextBlock Classes="headline-lg" Text="Histórico de Licenças" />
+      <TextBlock Classes="body-sm" Text="Toda licença emitida em &quot;Emitir Licença&quot; aparece aqui automaticamente." />
+    </StackPanel>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+      <TextBox Grid.Column="0" Text="{Binding SearchText}" Watermark="Buscar por cliente ou Machine ID..." />
+      <Button Grid.Column="1" Classes="secondary" Content="Atualizar" Command="{Binding RefreshCommand}" Margin="8,0,0,0" />
+    </Grid>
+
+    <TextBlock Grid.Row="2"
+               Text="{Binding ErrorMessage}"
+               Foreground="{StaticResource ErrorBrush}"
+               TextWrapping="Wrap"
+               Margin="0,0,0,16"
+               IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+    <Border Grid.Row="3" Classes="card" Padding="0">
+      <Grid RowDefinitions="Auto,*">
+
+        <!-- Cabeçalho -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="140,180,220,220,110,140"
+              Background="{StaticResource SurfaceContainerHighBrush}"
+              Margin="0"
+              >
+          <TextBlock Grid.Column="0" Classes="label-md" Text="EMISSÃO" Margin="12,10" />
+          <TextBlock Grid.Column="1" Classes="label-md" Text="CLIENTE" Margin="12,10" />
+          <TextBlock Grid.Column="2" Classes="label-md" Text="PRODUTO / PLANO" Margin="12,10" />
+          <TextBlock Grid.Column="3" Classes="label-md" Text="MACHINE ID" Margin="12,10" />
+          <TextBlock Grid.Column="4" Classes="label-md" Text="EXPIRAÇÃO" Margin="12,10" />
+          <TextBlock Grid.Column="5" Classes="label-md" Text="STATUS" Margin="12,10" />
+        </Grid>
+
+        <!-- Linhas -->
+        <ScrollViewer Grid.Row="1" MaxHeight="480">
+          <ItemsControl ItemsSource="{Binding Entries}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:HistoryRow">
+                <Border BorderBrush="{StaticResource OutlineVariantBrush}" BorderThickness="0,0,0,1">
+                  <Grid ColumnDefinitions="140,180,220,220,110,140">
+                    <TextBlock Grid.Column="0" Classes="body-sm" Text="{Binding IssuedAtLabel}" Margin="12,10" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding Entry.CustomerName}" Margin="12,10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Column="2" Text="{Binding ProductPlanLabel}" Margin="12,10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Column="3" Classes="mono-md" Text="{Binding Entry.MachineId}" Margin="12,10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Column="4" Classes="body-sm" Text="{Binding ExpiresAtLabel}" Margin="12,10" VerticalAlignment="Center" />
+                    <Border Grid.Column="5"
+                            Classes="badge"
+                            Background="{Binding StatusBackgroundBrush}"
+                            BorderBrush="{Binding StatusForegroundBrush}"
+                            HorizontalAlignment="Left"
+                            Margin="12,8">
+                      <TextBlock Classes="label-md" Text="{Binding StatusLabel}" Foreground="{Binding StatusForegroundBrush}" />
+                    </Border>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+
+        <TextBlock Grid.Row="1"
+                   Classes="body-sm"
+                   Text="Ainda não há nenhuma licença emitida — o histórico aparece aqui assim que emitires a primeira em &quot;Emitir Licença&quot;."
+                   TextWrapping="Wrap"
+                   Margin="16"
+                   IsVisible="{Binding HasNoEntries}" />
+
+      </Grid>
+    </Border>
+
+  </Grid>
+</UserControl>
