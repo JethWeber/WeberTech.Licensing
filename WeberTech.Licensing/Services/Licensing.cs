@@ -25,6 +25,8 @@ public static class Licensing
 
     public static LicenseStatus CurrentStatus { get; private set; } = LicenseStatus.NotFound;
 
+    public static event EventHandler? StatusChanged;
+
     public static void Initialize(ProductType productType, string productId)
     {
         if (string.IsNullOrWhiteSpace(productId))
@@ -45,6 +47,7 @@ public static class Licensing
             _licensePath = LicenseStore.GetDefaultPath(productId);
 
             ValidarLicencaLocal();
+            StatusChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 
@@ -79,6 +82,7 @@ public static class Licensing
                 _store.RecordSuccessfulVerification(_licensePath!, DateTime.UtcNow);
             }
 
+            StatusChanged?.Invoke(null, EventArgs.Empty);
             return CurrentStatus;
         }
     }
